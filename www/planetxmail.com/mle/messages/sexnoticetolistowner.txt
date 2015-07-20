@@ -1,0 +1,13 @@
+An offensive AD was sent to your List: [list_name]
+
+The Offerers User name is: [user_name]
+The Offenders Email is: [email]
+
+The Offensive word is: [word]
+
+The message they attempted to send ( which was blocked ) is below.
+-----------------------------------------------------------------
+
+Subject: [subject]
+
+Message: [message]

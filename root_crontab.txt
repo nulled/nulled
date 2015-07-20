@@ -1,0 +1,16 @@
+0 */11 * * * /usr/sbin/ntpdate clock.isc.org 1>/dev/null 2>&1; /sbin/hwclock -w
+15 */12 * * * /home/nulled/mysqlbackup.php >> /tmpfs/mysqlbackup_log &> /dev/null
+45 */4 * * * /home/nulled/automysqlcheck.sh &> /dev/null
+0 0 * * * /home/nulled/fap_billing.php >> /tmpfs/fap_billing_log &> /dev/null
+0 0 * * * /home/nulled/tap_billing.php >> /tmpfs/tap_billing_log &> /dev/null
+0 0 * * * /home/nulled/pxm_billing.php >> /tmpfs/pxm_billing_log &> /dev/null
+0 0 * * * /home/nulled/pxm_resetlists.php >> /tmpfs/pxm_resetlists_log &> /dev/null
+* * * * * /home/nulled/sendsoload.php cron >> /tmpfs/sendsoload_log &> /dev/null
+* * * * * /home/nulled/sendqueue.php cron >> /tmpfs/sendqueue_log &> /dev/null
+* * * * * /home/nulled/procbounce.php cron /var/log/mail.log >> /tmpfs/procbounce_log &> /dev/null
+* * * * * /home/nulled/sysmon.php cron &> /dev/null
+0 */1 * * * /home/nulled/calc_mail.php >> /tmpfs/procbounce_log &> /dev/null
+30 */1 * * * /usr/sbin/logrotate /etc/logrotate.conf &> /dev/null
+#* * * * * /home/nulled/tools/sysclean &> /dev/null
+*/5 * * * * /usr/bin/vnstat -u &> /dev/null
+*/5 * * * * /home/nulled/procroot.php >> /tmpfs/procbounce_log &> /dev/null

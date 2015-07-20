@@ -1,0 +1,21 @@
+Hello [user_name],
+This has been sent to you just to confirm that you want to be subscribe to:
+
+[list_name]
+
+to confirm, simply  follow the link below:
+
+[subscribe_link]
+
+(Click the link above or copy and paste the link into your browser)
+
+You are sent this email for a couple of reasons:
+We wanted  to make sure that the e-mail submitted is a real e-mail address
+and also wanted to prevent people from subscribing to the list with
+an e-mail address other then there own.
+
+If for some reason, you received this e-mail without
+any idea why you did, simply ignore and sorry for the
+inconvenience.
+
+- [admin_email_address]

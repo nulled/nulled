@@ -1,0 +1,2236 @@
+
+<HTML>
+<HEAD>
+<title>Programming C#: Chapter 18: Attributes and Reflection</title>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#990000" vlink="#0000CC">
+<table border="0" cellpadding="0" cellspacing="0" width="90%">
+<tr>
+<td colspan=2>
+<img width="515" height="37" align="bottom"
+ alt="Search the Catalog" border="0" 
+ usemap="#catalog_header_buttons" ismap
+ src="/graphics_new/catalog_header_buttons.gif" />
+<MAP Name="catalog_header_buttons">
+<aREA Shape="Rect" coords = "407,17,512,32"  href="/catalog/search.html">
+<aREA Shape="Rect" coords = "431,3,512,18"  href="/catalog/prdindex.html">
+</MAP>
+</td>
+</tr>
+<tr>
+<td width="25%" valign="top">
+<a href="/catalog/progcsharp/">
+<img hspace="10" vspace="10" src="/catalog/covers/progcsharp.s.gif" 
+alt="Programming C#" align="left" valign="top" border="0" />
+</a>
+</td>
+<td height="105" valign="top">
+<br />
+<h2>Programming C#</h2>
+<font size="-1">
+By Jesse Liberty<br />
+July 2001<br />
+0-596-00117-7, Order Number: 1177<br />
+680 pages, $39.95
+</font>
+</td>
+</tr>
+</table>
+<hr size=1 noshade="noshade" />
+<!--sample chapter begins -->
+
+<blockquote>
+
+<h2 class="ChapterTitle">Chapter 18
+<br>
+<A NAME="35947"></a>Attributes and Reflection</h2>
+
+
+<P CLASS="Body">Throughout this book, I have emphasized that a .NET application contains code, data, and metadata. <EM CLASS="Emphasis">Metadata</em> is information about the data<EM CLASS="Symbol">--</em>that is, information about the types, code, assembly, and so forth<EM CLASS="Symbol">--</em>that is stored along with your program. This chapter will explore how some of that metadata is created and used. </p>
+
+
+<P CLASS="Body"><EM CLASS="Emphasis">Attributes</em> are a mechanism for adding metadata, such as compiler instructions and other data about your data, methods, and classes, to the program itself. Attributes are inserted into the metadata and are visible through <EM CLASS="Filename">ILDasm</em> and other metadata-reading tools.</p>
+
+
+<P CLASS="Body"><EM CLASS="Emphasis">Reflection</em> is the process by which a program can read its own metadata. A program is said to reflect on itself, extracting metadata from its assembly and using that metadata either to inform the user or to modify its own behavior.</p>
+
+
+<H2 CLASS="HeadA">Attributes</h2>
+
+
+<P CLASS="Body">An <EM CLASS="Emphasis">attribute</em> is an object that represents data you want to associate with an element in your program. The element to which you attach an attribute is referred to as the <EM CLASS="Filename">target</em> of that attribute. For example, the attribute:</p>
+
+<PRE><CODE CLASS="Code">[NoIDispatch]</code>
+</pre>
+
+<P CLASS="Body">is associated with a class or an interface to indicate that the target class should derive from <CODE CLASS="Literal">IUnknown</code> rather than <CODE CLASS="Literal">IDispatch</code>, when exporting to COM. COM interface programming is discussed in detail in Chapter 22.</p>
+
+
+<P CLASS="Body">In Chapter 17, you saw this attribute:</p>
+
+<PRE><CODE CLASS="Code">[assembly: AssemblyKeyFile(&quot;c:&#92;myStrongName.key&quot;)]</code>
+</pre>
+
+<P CLASS="Body">This inserts metadata into the assembly to designate the program's <CODE CLASS="Literal">StrongName</code>.</p>
+
+
+<H2 CLASS="HeadA">Intrinsic Attributes</h2>
+
+
+<P CLASS="Body">Attributes come in two flavors: <EM CLASS="Filename">intrinsic</em> and <EM CLASS="Filename">custom</em>. <EM CLASS="Filename">Intrinsic</em> attributes are supplied as part of the Common Language Runtime (CLR), and they are integrated into .NET. <EM CLASS="Filename">Custom</em> attributes are attributes you create for your own purposes.</p>
+
+
+<P CLASS="Body">Most programmers will use only intrinsic attributes, though custom attributes can be a powerful tool when combined with reflection, described later in this chapter.</p>
+
+
+<H3 CLASS="HeadB">Attribute Targets</h3>
+
+
+<P CLASS="Body">If you search through the CLR, you'll find a great many attributes. Some attributes are applied to an assembly, others to a class or interface, and some, such as <CODE CLASS="Literal">[WebMethod]</code>, to class members. These are called the <EM CLASS="Filename">attribute targets</em>. Possible attribute targets are detailed in <A HREF="ch18.html#14588" CLASS="XRef">Table 18-1</a>.</p>
+
+<p>
+<TABLE border="1">
+<CAPTION>
+<B class="TableLabel"><a name="14588">Table 18-1:</a></b> 
+<B class="TableTitle">Possible attribute targets </b> 
+</caption>
+<TR>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading"><B CLASS="EmphasisBold">
+Member Name</b></p>
+
+</th>
+<TH ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellHeading">Usage</p>
+
+</th>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">All</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to any of the following elements: assembly, class, class member, delegate, enum, event, field, interface, method, module, parameter, property, return value, or struct</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Assembly</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to the assembly itself</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Class</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to instances of the class</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">ClassMembers</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to classes, structs, enums, constructors, methods, properties, fields, events, delegates, and interfaces</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Constructor</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a given constructor</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Delegate</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to the delegated method</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Enum</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to an enumeration</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Event</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to an event</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Field</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a field</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Interface</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to an interface</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Method</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a method</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Module</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a single module </p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Parameter</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a parameter of a method</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Property</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a property (both <CODE CLASS="Literal">get</code> and <CODE CLASS="Literal">set</code>, if implemented)</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">ReturnValue</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a return value</p>
+
+</td>
+</tr>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody"><CODE CLASS="Literal">Struct</code></p>
+
+</td>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="CellBody">Applied to a struct</p>
+
+</td>
+</tr>
+</table>
+
+<H3 CLASS="HeadB">Applying Attributes</h3>
+
+
+<P CLASS="Body">You apply attributes to their targets by placing them in square brackets immediately before the target item. You can combine attributes, either by stacking one on top of another:</p>
+
+<PRE><CODE CLASS="Code">[assembly: AssemblyDelaySign(false)]</code>
+<CODE CLASS="Code">[assembly: AssemblyKeyFile(&quot;.&#92;&#92;keyFile.snk&quot;)]</code>
+</pre>
+
+<P CLASS="Body">or by separating the attributes with commas:</p>
+
+<PRE><CODE CLASS="Code">[assembly: AssemblyDelaySign(false),</code>
+<CODE CLASS="Code">   assembly: AssemblyKeyFile(&quot;.&#92;&#92;keyFile.snk&quot;)]</code>
+</pre>
+
+<blockquote>
+<P CLASS="NoteTip"><b>TIP:</b> &nbsp;
+You must place assembly attributes after all <CODE CLASS="Literal">using</code> statements and before any code.
+</blockquote>
+
+<P CLASS="Body">Many intrinsic attributes are used for interoperating with COM, as discussed in detail in Chapter 22. You've already seen use of one attribute (<CODE CLASS="Literal">[WebMethod]</code>) in Chapter 16. You'll see other attributes, such as the <CODE CLASS="Literal">[Serializable]</code> attribute, used in the discussion of serialization in Chapter 19.
+
+<P CLASS="Body">The <CODE CLASS="Literal">System.Runtime</code> namespace offers a number of intrinsic attributes, including attributes for assemblies (such as the <CODE CLASS="Literal">keyname</code> attribute), for configuration (such as <CODE CLASS="Literal">debug</code> to indicate the debug build), and for version attributes.
+
+<P CLASS="Body">You can organize the intrinsic attributes by how they are used. The principal intrinsic attributes are those used for COM, those used to modify the Interface Definition Language (IDL) file from within a source-code file, attributes used by the ATL Server classes, and attributes used by the Visual C++ compiler.
+
+<P CLASS="Body">Perhaps the attribute you are most likely to use in your everyday C# programming (if you are not interacting with COM) is <CODE CLASS="Literal">[Serializable]</code>. As you'll see in Chapter 19, all you need to do to ensure that your class can be serialized to disk or to the Internet is add the <CODE CLASS="Literal">[Serializable]</code> attribute to the class:
+<PRE><CODE CLASS="Code">[serializable]</code>
+<CODE CLASS="Code">class MySerializableClass</code>
+</pre>
+
+<P CLASS="Body">The attribute tag is put in square brackets immediately before its target--in this case, the class declaration.
+
+<P CLASS="Body">The key fact about intrinsic attributes is that you know when you need them; the task will dictate their use.
+
+<H2 CLASS="HeadA">Custom Attributes</h2>
+
+
+<P CLASS="Body">You are free to create your own custom attributes and use them at runtime as you see fit. Suppose, for example, that your development organization wants to keep track of bug fixes. You already keep a database of all your bugs, but you'd like to tie your bug reports to specific fixes in the code.
+
+<P CLASS="Body">You might add comments to your code along the lines of:
+<PRE><CODE CLASS="Code">// Bug 323 fixed by Jesse Liberty 1/1/2005.</code>
+</pre>
+
+<P CLASS="Body">This would make it easy to see in your source code, but there is no enforced connection to Bug 323 in the database. A custom attribute might be just what you need. You would replace your comment with something like this:
+<PRE><CODE CLASS="Code">[BugFixAttribute(323,&quot;Jesse Liberty&quot;,&quot;1/1/2005&quot;) </code>
+<CODE CLASS="Code">Comment=&quot;Off by one error&quot;]</code>
+</pre>
+
+<P CLASS="Body">You could then write a program to read through the metadata to find these bug-fix notations and update the database. The attribute would serve the purposes of a comment, but would also allow you to retrieve the information programmatically through tools you'd create.
+
+<H3 CLASS="HeadB">Declaring an Attribute</h3>
+
+
+<P CLASS="Body">Attributes, like most things in C#, are embodied in classes. To create a custom attribute, you derive your new custom attribute class from <CODE CLASS="Literal">System.Attribute</code>:
+<PRE><CODE CLASS="Code">public class BugFixAttribute : System.Attribute</code>
+</pre>
+
+<P CLASS="Body">You need to tell the compiler with which kinds of elements this attribute can be used (the attribute target). You specify this with (what else?) an attribute:
+<PRE><CODE CLASS="Code">[AttributeUsage(AttributeTargets.Class |</code>
+<CODE CLASS="Code">    AttributeTargets.Constructor |</code>
+<CODE CLASS="Code">    AttributeTargets.Field |</code>
+<CODE CLASS="Code">    AttributeTargets.Method |</code>
+<CODE CLASS="Code">    AttributeTargets.Property,</code>
+<CODE CLASS="Code">    AllowMultiple = true)]</code>
+</pre>
+
+<P CLASS="Body"><CODE CLASS="Literal">AttributeUsage</code> is an attribute applied to attributes: a meta-attribute. It provides, if you will, meta-metadata<EM CLASS="Symbol">--</em>that is, data about the metadata. For the <CODE CLASS="Literal">AttributeUsage</code> attribute constructor, you pass two arguments. The first argument is a set of flags that indicate the target<EM CLASS="Symbol">--</em>in this case, the class and its constructor, fields, methods, and properties. The second argument is a flag that indicates whether a given element might receive more than one such attribute. In this example, <CODE CLASS="Literal">AllowMultiple</code> is set to <CODE CLASS="Literal">true</code>, indicating that class members can have more than one <CODE CLASS="Literal">BugFixAttribute</code> assigned.
+
+<H3 CLASS="HeadB">Naming an Attribute</h3>
+
+
+<P CLASS="Body">The new custom attribute in this example is named <CODE CLASS="Literal">BugFixAttribute</code>. The convention is to append the word <CODE CLASS="Literal">Attribute</code> to your attribute name. The compiler supports this by allowing you to call the attribute with the shorter version of the name. Thus, you can write:
+<PRE><CODE CLASS="Code">[BugFix(123, &quot;Jesse Liberty&quot;, &quot;01/01/05&quot;, Comment=&quot;Off by one&quot;)]</code>
+</pre>
+
+<P CLASS="Body">The compiler will first look for an attribute named <CODE CLASS="Literal">BugFix</code> and, if it does not find that, will then look for <CODE CLASS="Literal">BugFixAttribute</code>.
+
+<H3 CLASS="HeadB">Constructing an Attribute</h3>
+
+
+<P CLASS="Body">Every attribute must have at least one constructor. Attributes take two types of parameters, <EM CLASS="Filename">positional</em> and <EM CLASS="Filename">named</em>. In the <CODE CLASS="Literal">BugFix</code> example, the programmer's name and the date are positional parameters, and <CODE CLASS="Literal">comment</code> is a named parameter. Positional parameters are passed in through the constructor and must be passed in the order declared in the constructor:
+<PRE><CODE CLASS="Code">public BugFixAttribute(int bugID, string programmer, </code>
+<CODE CLASS="Code">string date)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    this.bugID = bugID;</code>
+<CODE CLASS="Code">    this.programmer = programmer;</code>
+<CODE CLASS="Code">    this.date = date;</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">Named parameters are implemented as properties:
+<PRE><CODE CLASS="Code">public string Comment</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">     get</code>
+<CODE CLASS="Code">     {</code>
+<CODE CLASS="Code">         return comment;</code>
+<CODE CLASS="Code">     }</code>
+<CODE CLASS="Code">     set</code>
+<CODE CLASS="Code">     {</code>
+<CODE CLASS="Code">         comment = value;</code>
+<CODE CLASS="Code">     }</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">It is common to create read-only properties for the positional parameters:
+<PRE><CODE CLASS="Code">public int BugID</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">     get</code>
+<CODE CLASS="Code">     {</code>
+<CODE CLASS="Code">         return bugID;</code>
+<CODE CLASS="Code">     }</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<H3 CLASS="HeadB">Using an Attribute</h3>
+
+
+<P CLASS="Body">Once you have defined an attribute, you can put it to work by placing it immediately before its target. To test the <CODE CLASS="Literal">BugFixAttribute</code> of the preceding example, the following program creates a simple class named <CODE CLASS="Literal">MyMath</code> and gives it two functions. You'll assign <CODE CLASS="Literal">BugFixAttributes</code> to the class to record its code-maintenance history:
+<PRE><CODE CLASS="Code">[BugFixAttribute(121,&quot;Jesse Liberty&quot;,&quot;01/03/05&quot;)]</code>
+<CODE CLASS="Code">[BugFixAttribute(107,&quot;Jesse Liberty&quot;,&quot;01/04/05&quot;, </code>
+<CODE CLASS="Code">    Comment=&quot;Fixed off by one errors&quot;)]</code>
+<CODE CLASS="Code">public class MyMath</code>
+</pre>
+
+<P CLASS="Body">These attributes will be stored with the metadata. <A HREF="ch18.html#59172" CLASS="XRef">Example 18-1</a> shows the complete program.
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="59172">Example 18-1:</a></b> 
+<B class="ExampleTitle">Working with custom attributes </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // create custom attribute to be assigned to class members</code>
+<CODE CLASS="Code">   [AttributeUsage(AttributeTargets.Class |</code>
+<CODE CLASS="Code">       AttributeTargets.Constructor |</code>
+<CODE CLASS="Code">       AttributeTargets.Field |</code>
+<CODE CLASS="Code">       AttributeTargets.Method |</code>
+<CODE CLASS="Code">       AttributeTargets.Property,</code>
+<CODE CLASS="Code">       AllowMultiple = true)]</code>
+<CODE CLASS="Code">   public class BugFixAttribute : System.Attribute</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // attribute constructor for </code>
+<CODE CLASS="Code">      // positional parameters</code>
+<CODE CLASS="Code">      public BugFixAttribute</code>
+<CODE CLASS="Code">         (int bugID, </code>
+<CODE CLASS="Code">         string programmer, </code>
+<CODE CLASS="Code">         string date)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         this.bugID = bugID;</code>
+<CODE CLASS="Code">         this.programmer = programmer;</code>
+<CODE CLASS="Code">         this.date = date;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // accessor</code>
+<CODE CLASS="Code">      public int BugID</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         get</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            return bugID;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // property for named parameter</code>
+<CODE CLASS="Code">      public string Comment</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         get</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            return comment;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         set</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            comment = value;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // accessor</code>
+<CODE CLASS="Code">      public string Date</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         get</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            return date;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // accessor</code>
+<CODE CLASS="Code">      public string Programmer</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         get</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            return programmer;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">        </code>
+<CODE CLASS="Code">      // private member data </code>
+<CODE CLASS="Code">      private int     bugID;</code>
+<CODE CLASS="Code">      private string  comment;</code>
+<CODE CLASS="Code">      private string  date;</code>
+<CODE CLASS="Code">      private string  programmer;</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // ********* assign the attributes to the class ********</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   [BugFixAttribute(121,&quot;Jesse Liberty&quot;,&quot;01/03/05&quot;)]</code>
+<CODE CLASS="Code">   [BugFixAttribute(107,&quot;Jesse Liberty&quot;,&quot;01/04/05&quot;, </code>
+<CODE CLASS="Code">       Comment=&quot;Fixed off by one errors&quot;)]</code>
+<CODE CLASS="Code">   public class MyMath</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">        </code>
+<CODE CLASS="Code">      public double DoFunc1(double param1)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         return param1 + DoFunc2(param1);           </code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      public double DoFunc2(double param1)</code>
+<CODE CLASS="Code">      {           </code>
+<CODE CLASS="Code">         return param1 / 3;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">    </code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class Tester</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         MyMath mm = new MyMath(  );</code>
+<CODE CLASS="Code">         Console.WriteLine(&quot;Calling DoFunc(7). Result: {0}&quot;,</code>
+<CODE CLASS="Code">            mm.DoFunc1(7));</code>
+<CODE CLASS="Code">      }        </code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">}</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output:</em></code>
+<CODE CLASS="Code">Calling DoFunc(7). Result: 9.3333333333333339</code>
+</pre>
+
+<P CLASS="Body">As you can see, the attributes had absolutely no impact on the output. In fact, for the moment, you have only my word that the attributes exist at all. A quick look at the metadata using ILDasm does reveal that the attributes are in place, however, as shown in <A HREF="ch18.html#13102" CLASS="XRef">Figure 18-1</a>. We'll see how to get at this metadata and use it in your program in the next section.
+
+<p>
+<TABLE BORDER="1">
+<CAPTION>
+<B class="FigureLabel"><a name="13102"></a>Figure 18-1.</b> 
+<B class="FigureTitle">The metadata in the assembly</b> 
+</caption>
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<P CLASS="FigureHolder"><img src="pc_1801.gif" align="baseline" alt=" " />&nbsp;
+</td>
+</tr>
+</table>
+
+<H2 CLASS="HeadA">Reflection</h2>
+
+
+<P CLASS="Body">For the attributes in the metadata to be useful, you need a way to access them<EM CLASS="Symbol">--</em>ideally during runtime. The classes in the <CODE CLASS="Literal">Reflection</code> namespace, along with the <CODE CLASS="Literal">System.Type</code> and <CODE CLASS="Literal">System.TypedReference</code> classes, provide support for examining and interacting with the metadata.
+
+<P CLASS="Body">Reflection is generally used for any of four tasks:
+<DL>
+<DT CLASS="ListVariableTerm">Viewing metadata</dt>
+<DD CLASS="ListVariable">This might be used by tools and utilities that wish to display metadata.</dd>
+<p>
+<DT CLASS="ListVariableTerm">Performing type discovery</dt>
+<DD CLASS="ListVariable">This allows you to examine the types in an assembly and interact with or instantiate those types. This can be useful in creating custom scripts. For example, you might want to allow your users to interact with your program using a script language, such as JavaScript, or a scripting language you create yourself.</dd>
+<p>
+<DT CLASS="ListVariableTerm">Late binding to methods and properties</dt>
+<DD CLASS="ListVariable">This allows the programmer to invoke properties and methods on objects dynamically instantiated based on type discovery. This is also known as <EM CLASS="Emphasis">dynamic invocation</em>.</dd>
+<p>
+<DT CLASS="ListVariableTerm">Creating types at runtime (Reflection Emit)</dt>
+<DD CLASS="ListVariable">The ultimate use of reflection is to create new types at runtime and then to use those types to perform tasks. You might do this when a custom class, created at runtime, will run significantly faster than more generic code created at compile time. An example is offered later in this chapter.</dd>
+<p>
+</dl>
+
+<H3 CLASS="HeadB">Viewing MetaData</h3>
+
+
+<P CLASS="Body">In this section, you will use the C# Reflection support to read the metadata in the <CODE CLASS="Literal">MyMath</code> class.
+
+<P CLASS="Body">You start by initializing an object of the type <CODE CLASS="Literal">MemberInfo</code>. This object, in the <CODE CLASS="Literal">System.Reflection</code> namespace, is provided to discover the attributes of a member and to provide access to the metadata:
+<PRE><CODE CLASS="Code">System.Reflection.MemberInfo inf = typeof(MyMath);</code>
+</pre>
+
+<P CLASS="Body">You call the <CODE CLASS="Literal">typeof</code> operator on the <CODE CLASS="Literal">MyMath</code> type, which returns an object of type <CODE CLASS="Literal">Type</code>, which derives from <CODE CLASS="Literal">MemberInfo.</code>
+<BLOCKQUOTE>
+
+<P CLASS="NoteTip"><b>TIP:</b>&nbsp;
+The <CODE CLASS="Literal">Type</code> class is the root of the reflection classes. <CODE CLASS="Literal">Type</code> encapsulates a representation of the type of an object. The <CODE CLASS="Literal">Type</code> class is the primary way to access metadata. <CODE CLASS="Literal">MemberInfo</code> derives from <CODE CLASS="Literal">Type</code> and encapsulates information about the members of a class (e.g., methods, properties, fields, events, etc.).
+</blockquote>
+
+<P CLASS="Body">The next step is to call <CODE CLASS="Literal">GetCustomAttributes</code> on this <CODE CLASS="Literal">MemberInfo</code> object, passing in the type of the attribute you want to find. What you get back is an array of objects, each of type <CODE CLASS="Literal">BugFixAttribute</code>:</p>
+
+<PRE><CODE CLASS="Code">object[] attributes;</code>
+<CODE CLASS="Code">attributes = </code>
+<CODE CLASS="Code">   inf.GetCustomAttributes(typeof(BugFixAttribute),false);</code>
+</pre>
+
+<P CLASS="Body">You can now iterate through this array, printing out the properties of the <CODE CLASS="Literal">BugFixAttribute</code> object. <A HREF="ch18.html#21867" CLASS="XRef">Example 18-2</a> replaces the <CODE CLASS="Literal">Tester</code> class from <A HREF="ch18.html#59172" CLASS="XRef">Example 18-1</a>.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="21867">Example 18-2:</a></b> 
+<B class="ExampleTitle">Using Reflection </b> 
+</caption>
+<PRE><CODE CLASS="Code">public static void Main(  )</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    MyMath mm = new MyMath(  );</code>
+<CODE CLASS="Code">    Console.WriteLine(&quot;Calling DoFunc(7). Result: {0}&quot;,</code>
+<CODE CLASS="Code">        mm.DoFunc1(7));</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">    // get the member information and use it to</code>
+<CODE CLASS="Code">    // retrieve the custom attributes</code>
+<CODE CLASS="Code">    System.Reflection.MemberInfo inf = typeof(MyMath);</code>
+<CODE CLASS="Code">    object[] attributes;</code>
+<CODE CLASS="Code">    attributes = </code>
+<CODE CLASS="Code">       inf.GetCustomAttributes(</code>
+<CODE CLASS="Code">            typeof(BugFixAttribute), false);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">    // iterate through the attributes, retrieving the </code>
+<CODE CLASS="Code">    // properties</code>
+<CODE CLASS="Code">    foreach(Object attribute in attributes)</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">        BugFixAttribute bfa = (BugFixAttribute) attribute;</code>
+<CODE CLASS="Code">        Console.WriteLine(&quot;&#92;nBugID: {0}&quot;, bfa.BugID);</code>
+<CODE CLASS="Code">        Console.WriteLine(&quot;Programmer: {0}&quot;, bfa.Programmer);</code>
+<CODE CLASS="Code">        Console.WriteLine(&quot;Date: {0}&quot;, bfa.Date);</code>
+<CODE CLASS="Code">        Console.WriteLine(&quot;Comment: {0}&quot;, bfa.Comment);</code>
+<CODE CLASS="Code">    }</code>
+<CODE CLASS="Code">}</code>
+<CODE CLASS="Code"> &nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output:</em></code>
+<CODE CLASS="Code">Calling DoFunc(7). Result: 9.3333333333333339</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">BugID: 121</code>
+<CODE CLASS="Code">Programmer: Jesse Liberty</code>
+<CODE CLASS="Code">Date: 01/03/05</code>
+<CODE CLASS="Code">Comment:</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">BugID: 107</code>
+<CODE CLASS="Code">Programmer: Jesse Liberty</code>
+<CODE CLASS="Code">Date: 01/04/05</code>
+<CODE CLASS="Code">Comment: Fixed off by one errors</code>
+</pre>
+
+<P CLASS="Body">When you put this replacement code into <A HREF="ch18.html#59172" CLASS="XRef">Example 18-1</a> and run it, you can see the metadata printed as you'd expect.</p>
+
+
+<H3 CLASS="HeadB">Type Discovery</h3>
+
+
+<P CLASS="Body">You can use reflection to explore and examine the contents of an assembly. You can find the types associated with a module; the methods, fields, properties, and events associated with a type, as well as the signatures of each of the type's methods; the interfaces supported by the type; and the type's base class.</p>
+
+
+<P CLASS="Body">To start, load an assembly dynamically with the <CODE CLASS="Literal">Assembly.Load</code> static method. The <CODE CLASS="Literal">Assembly</code> class encapsulates the actual assembly itself, for purposes of reflection. The signature for the <CODE CLASS="Literal">Load</code> method is:</p>
+
+<PRE><CODE CLASS="Code">public static Assembly.Load(AssemblyName)</code>
+</pre>
+
+<P CLASS="Body">For the next example, pass in the Core Library to the <CODE CLASS="Literal">Load</code> method. <CODE CLASS="Literal">MsCorLib.dll</code> has the core classes of the .NET Framework:</p>
+
+<PRE><CODE CLASS="Code">Assembly a = Assembly.Load(&quot;Mscorlib.dll&quot;);</code>
+</pre>
+
+<P CLASS="Body">Once the assembly is loaded, you can call <CODE CLASS="Literal">GetTypes(  )</code> to return an array of <CODE CLASS="Literal">Type</code> objects. The <CODE CLASS="Literal">Type</code> object is the heart of reflection. <CODE CLASS="Literal">Type</code> represents type declarations: classes, interfaces, arrays, values, and enumerations:</p>
+
+<PRE><CODE CLASS="Code">Type[] types = a.GetTypes(  );</code>
+</pre>
+
+<P CLASS="Body">The assembly returns an array of types that you can display in a <CODE CLASS="Literal">foreach</code> loop, as shown in <A HREF="ch18.html#86816" CLASS="XRef">Example 18-3</a>. Because this listing uses the <CODE CLASS="Literal">Type</code> class, you will want to add a <CODE CLASS="Literal">using</code> statement for the <CODE CLASS="Literal">System.Reflection</code> namespace.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="86816">Example 18-3:</a></b> 
+<B class="ExampleTitle">Reflecting on an assembly </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    using System;</code>
+<CODE CLASS="Code">    using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">    public class Tester</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">        public static void Main(  )</code>
+<CODE CLASS="Code">        {</code>
+<CODE CLASS="Code">            // what is in the assembly</code>
+<CODE CLASS="Code">            Assembly a = Assembly.Load(&quot;Mscorlib.dll&quot;);</code>
+<CODE CLASS="Code">            Type[] types = a.GetTypes(  );</code>
+<CODE CLASS="Code">            foreach(Type t in types)</code>
+<CODE CLASS="Code">            {</code>
+<CODE CLASS="Code">                    Console.WriteLine(&quot;Type is {0}&quot;, t);</code>
+<CODE CLASS="Code">            } </code>
+<CODE CLASS="Code">            Console.WriteLine(</code>
+<CODE CLASS="Code">               &quot;{0} types found&quot;, types.Length);</code>
+<CODE CLASS="Code">        }</code>
+<CODE CLASS="Code">    }</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">The output from this would fill many pages. Here is a short excerpt:</p>
+
+<PRE><CODE CLASS="Code">Type is System.TypeCode</code>
+<CODE CLASS="Code">Type is System.Security.Util.StringExpressionSet</code>
+<CODE CLASS="Code">Type is System.Runtime.InteropServices.COMException</code>
+<CODE CLASS="Code">Type is System.Runtime.InteropServices.SEHException</code>
+<CODE CLASS="Code">Type is System.Reflection.TargetParameterCountException</code>
+<CODE CLASS="Code">Type is System.Text.UTF7Encoding</code>
+<CODE CLASS="Code">Type is System.Text.UTF7Encoding$Decoder</code>
+<CODE CLASS="Code">Type is System.Text.UTF7Encoding$Encoder</code>
+<CODE CLASS="Code">Type is System.ArgIterator</code>
+<CODE CLASS="Code">Type is System.Runtime.Remoting.JITLookupTable</code>
+<CODE CLASS="Code">Type is System.Runtime.Remoting.IComponentServices</code>
+<CODE CLASS="Code">Type is System.Runtime.Remoting.ComponentServices</code>
+<CODE CLASS="Code">1429 types found</code>
+</pre>
+
+<P CLASS="Body">This example obtained an array filled with the types from the Core Library and printed them one by one. The array contained 1,429 entries on my machine.</p>
+
+
+<H3 CLASS="HeadB">Reflecting on a Type</h3>
+
+
+<P CLASS="Body">You can reflect on a single type in the <CODE CLASS="Literal">mscorlib</code> assembly as well. To do so, you extract a type from the assembly with the <CODE CLASS="Literal">GetType(  )</code> method, as shown in <A HREF="ch18.html#40617" CLASS="XRef">Example 18-4</a>.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="40617">Example 18-4:</a></b> 
+<B class="ExampleTitle">Reflecting on a type </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    using System;</code>
+<CODE CLASS="Code">    using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">    public class Tester</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">        public static void Main(  )</code>
+<CODE CLASS="Code">        {</code>
+<CODE CLASS="Code">            // examine a single object</code>
+<CODE CLASS="Code">             Type theType = </code>
+<CODE CLASS="Code">                Type.GetType(</code>
+<CODE CLASS="Code">                   &quot;System.Reflection.Assembly&quot;);</code>
+<CODE CLASS="Code">             Console.WriteLine(</code>
+<CODE CLASS="Code">                &quot;&#92;nSingle Type is {0}&#92;n&quot;, theType);</code>
+<CODE CLASS="Code">        }</code>
+<CODE CLASS="Code">    }    </code>
+<CODE CLASS="Code">}</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output:</em></code>
+<CODE CLASS="Code">Single Type is System.Reflection.Assembly</code>
+</pre>
+
+<H4 CLASS="HeadC">Finding all type members</h4>
+
+
+<P CLASS="Body">You can ask the <CODE CLASS="Literal">Assembly</code> type for all its members using the <CODE CLASS="Literal">GetMembers(  )</code> method of the <CODE CLASS="Literal">Type</code> class, which lists all the methods, properties, and fields, as shown in <A HREF="ch18.html#79002" CLASS="XRef">Example 18-5</a>.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="79002">Example 18-5:</a></b> 
+<B class="ExampleTitle">Reflecting on the members of a type </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class Tester</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         // examine a single object</code>
+<CODE CLASS="Code">         Type theType = </code>
+<CODE CLASS="Code">            Type.GetType(</code>
+<CODE CLASS="Code">               &quot;System.Reflection.Assembly&quot;);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;&#92;nSingle Type is {0}&#92;n&quot;, theType);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // get all the members</code>
+<CODE CLASS="Code">         MemberInfo[] mbrInfoArray = </code>
+<CODE CLASS="Code">            theType.GetMembers(  );</code>
+<CODE CLASS="Code">         foreach (MemberInfo mbrInfo in mbrInfoArray )</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            Console.WriteLine(&quot;{0} is a {1}&quot;, </code>
+<CODE CLASS="Code">               mbrInfo, mbrInfo.MemberType);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }    </code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">Once again the output is quite lengthy, but within the output you see fields, methods, constructors, and properties, as shown in this excerpt:</p>
+
+<PRE><CODE CLASS="Code">System.String s_localFilePrefix is a Field</code>
+<CODE CLASS="Code">Boolean IsDefined(System.Type) is a Method</code>
+<CODE CLASS="Code">Void .ctor(  ) is a Constructor</code>
+<CODE CLASS="Code">System.String CodeBase  is a Property</code>
+<CODE CLASS="Code">System.String CopiedCodeBase  is a Property</code>
+</pre>
+
+<H4 CLASS="HeadC">Finding type methods</h4>
+
+
+<P CLASS="Body">You might want to focus on methods only, excluding the fields, properties, and so forth. To do so, you remove the call to <CODE CLASS="Literal">GetMembers(  )</code>:</p>
+
+<PRE><CODE CLASS="Code">MemberInfo[] mbrInfoArray = </code>
+<CODE CLASS="Code">    theType.GetMembers(BindingFlags.LookupAll);</code>
+</pre>
+
+<P CLASS="Body">and add a call to <CODE CLASS="Literal">GetMethods(  )</code>:</p>
+
+<PRE><CODE CLASS="Code">mbrInfoArray = theType.GetMethods(  );</code>
+</pre>
+
+<P CLASS="Body">The output now is nothing but the methods:</p>
+
+<PRE><CODE CLASS="Code"><EM CLASS="LineAnnotation">Output (excerpt):</em></code>
+<CODE CLASS="Code">Boolean Equals(System.Object) is a Method</code>
+<CODE CLASS="Code">System.String ToString(  ) is a Method</code>
+<CODE CLASS="Code">System.String CreateQualifiedName(</code>
+<CODE CLASS="Code">      System.String, System.String) is a Method</code>
+<CODE CLASS="Code">System.Reflection.MethodInfo get_EntryPoint(  ) is a Method</code>
+</pre>
+
+<H4 CLASS="HeadC">Finding particular type members</h4>
+
+
+<P CLASS="Body">Finally, to narrow it down even further, you can use the <CODE CLASS="Literal">FindMembers</code> method to find particular members of the type. For example, you can narrow your search to methods whose names begin with the letters <CODE CLASS="Literal">Get</code>.</p>
+
+
+<P CLASS="Body">To narrow the search, you use the <CODE CLASS="Literal">FindMembers</code> method, which takes four parameters: <CODE CLASS="Literal">MemberTypes</code>, <CODE CLASS="Literal">BindingFlags</code>, <CODE CLASS="Literal">MemberFilter</code>, and <CODE CLASS="Literal">object</code>.</p>
+
+<DL>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">MemberTypes</code></dt>
+<DD CLASS="ListVariable">A <CODE CLASS="Literal">MemberTypes</code> object that indicates the type of the member to search for. These include <CODE CLASS="Literal">All</code>, <CODE CLASS="Literal">Constructor</code>, <CODE CLASS="Literal">Custom</code>, <CODE CLASS="Literal">Event</code>, <CODE CLASS="Literal">Field</code>, <CODE CLASS="Literal">Method</code>, <CODE CLASS="Literal">Nestedtype</code>, <CODE CLASS="Literal">Property</code>, and <CODE CLASS="Literal">TypeInfo</code>. You will also use the <CODE CLASS="Literal">MemberTypes.Method</code> to find a method.</dd>
+<p>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">BindingFlags</code></dt>
+<DD CLASS="ListVariable">An enumeration that controls the way searches are conducted by reflection. There are a great many <CODE CLASS="Literal">BindingFlag</code> values, including <CODE CLASS="Literal">IgnoreCase</code>, <CODE CLASS="Literal">Instance</code>, <CODE CLASS="Literal">Public</code>, <CODE CLASS="Literal">Static</code>, and so forth. The <CODE CLASS="Literal">BindingFlags</code> default member indicates no binding flag, which is what you want because you do not want to restrict the binding.</dd>
+<p>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">MemberFilter</code></dt>
+<DD CLASS="ListVariable">A delegate (see Chapter 12) that is used to filter the list of members in the MemberInfo array of objects. The filter you'll use is <CODE CLASS="Literal">Type.FilterName</code>, a field of the <CODE CLASS="Literal">Type</code> class used for filtering on a name.</dd>
+<p>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">Object</code></dt>
+<DD CLASS="ListVariable">A string value that will be used by the filter. In this case you'll pass in &quot;<CODE CLASS="Literal">Get*</code>&quot; to match only those methods that begin with the letters <CODE CLASS="Literal">Get.</code></dd>
+<p>
+</dl>
+
+<P CLASS="Body">The complete listing for filtering on these methods is shown in <A HREF="ch18.html#59363" CLASS="XRef">Example 18-6</a>.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="59363">Example 18-6:</a></b> 
+<B class="ExampleTitle">Finding particular members </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class Tester</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         // examine a single object</code>
+<CODE CLASS="Code">         Type theType = Type.GetType(</code>
+<CODE CLASS="Code">            &quot;System.Reflection.Assembly&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // just members which are methods beginning with Get</code>
+<CODE CLASS="Code">         MemberInfo[] mbrInfoArray =</code>
+<CODE CLASS="Code">            theType.FindMembers(MemberTypes.Method, </code>
+<CODE CLASS="Code">               BindingFlags.Default,</code>
+<CODE CLASS="Code">               Type.FilterName, &quot;Get*&quot;);</code>
+<CODE CLASS="Code">         foreach (MemberInfo mbrInfo in mbrInfoArray )</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            Console.WriteLine(&quot;{0} is a {1}&quot;, </code>
+<CODE CLASS="Code">               mbrInfo, mbrInfo.MemberType);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output (excerpt):</em></code>
+<CODE CLASS="Code">System.Type[] GetTypes(  ) is a Method</code>
+<CODE CLASS="Code">System.Type[] GetExportedTypes(  ) is a Method</code>
+<CODE CLASS="Code">System.Type GetType(System.String, Boolean) is a Method</code>
+<CODE CLASS="Code">System.Type GetType(System.String) is a Method</code>
+<CODE CLASS="Code">System.Reflection.AssemblyName GetName(Boolean) is a Method</code>
+<CODE CLASS="Code">System.Reflection.AssemblyName GetName(  ) is a Method</code>
+<CODE CLASS="Code">Int32 GetHashCode(  ) is a Method</code>
+</pre>
+
+<H3 CLASS="HeadB">Late Binding</h3>
+
+
+<P CLASS="Body">Once you have discovered a method, it's possible to invoke it using reflection. For example, you might like to invoke the <CODE CLASS="Literal">Cos(  )</code> method of <CODE CLASS="Literal">System.Math</code>, which returns the cosine of an angle.</p>
+
+<BLOCKQUOTE>
+
+<P CLASS="NoteTip"><b>TIP:</b> &nbsp;
+You could, of course, call <CODE CLASS="Literal">Cos(  )</code> in the normal course of your code, but reflection allows you to bind to that method at runtime. This is called <EM CLASS="Emphasis">late-binding</em> and offers the flexibility of choosing at runtime which object you will bind to and invoking it programmatically. This can be useful when creating a custom script to be run by the user or when working with objects that might not be available at compile time. For example, by using late-binding, your program can interact with the spellchecker or other components of a running commercial word processing program such as Microsoft Word.
+</blockquote>
+
+<P CLASS="Body">To invoke <CODE CLASS="Literal">Cos(  )</code>, you will first get the <CODE CLASS="Literal">Type</code> information for the <CODE CLASS="Literal">System.Math</code> class:</p>
+
+<PRE><CODE CLASS="Code">Type theMathType = Type.GetType(&quot;System.Math&quot;);</code>
+</pre>
+
+<P CLASS="Body">With that type information, you can dynamically load an instance of that class by using a static method of the<CODE CLASS="Literal"> Activator</code> class.</p>
+
+
+<P CLASS="Body">The <CODE CLASS="Literal">Activator</code> class contains four methods, all static, which you can use to create objects locally or remotely or to obtain references to existing objects. The four methods are: <CODE CLASS="Literal">CreateComInstanceFrom</code>, <CODE CLASS="Literal">CreateInstanceFrom</code>, <CODE CLASS="Literal">GetObject</code>, and <CODE CLASS="Literal">CreateInstance</code>:</p>
+
+<DL>
+<DT CLASS="ListVariableTerm">CreateComInstanceFrom</dt>
+<DD CLASS="ListVariable">Used to create instances of COM objects.</dd>
+<p>
+<DT CLASS="ListVariableTerm">CreateInstanceFrom</dt>
+<DD CLASS="ListVariable">Used to create a reference to an object from a particular assembly and type name.</dd>
+<p>
+<DT CLASS="ListVariableTerm">GetObject</dt>
+<DD CLASS="ListVariable">Used when marshaling objects. Marshaling is discussed in detail in Chapter 19.</dd>
+<p>
+<DT CLASS="ListVariableTerm">CreateInstance</dt>
+<DD CLASS="ListVariable">Used to create local or remote instances of an object. You'll use this method to instantiate an object of the <CODE CLASS="Literal">System.Math</code> class.</dd>
+<p>
+<CODE CLASS="Code">Object theObj = Activator.CreateInstance(theMathType);</code>
+</dl>
+
+<P CLASS="Body">You now have two objects in hand: a <CODE CLASS="Literal">Type</code> object named <CODE CLASS="Literal">TheMathType</code>, which you created by calling <CODE CLASS="Literal">GetType</code>, and an instance of the <CODE CLASS="Literal">System.Math</code> class named <CODE CLASS="Literal">theObj</code>, which you instantiated by calling <CODE CLASS="Literal">CreateInstance</code>.</p>
+
+
+<P CLASS="Body">Before you can invoke a method on the object, you must get the method you need from the <CODE CLASS="Literal">Type</code> object, <CODE CLASS="Literal">theMathType</code>. To do so, you'll call <CODE CLASS="Literal">GetMethod()</code>, and you'll pass in the signature of the <CODE CLASS="Literal">Cos</code> method.</p>
+
+
+<P CLASS="Body">The signature, you will remember, is the name of the method (<CODE CLASS="Literal">Cos</code>) and its parameter types. In the case of <CODE CLASS="Literal">Cos()</code>, there is only one parameter: a double. Whereas, <CODE CLASS="Literal">Type.GetMethod</code> takes two parameters: the first represents the name of the method you want, and the second represents the parameters. The name is passed as a string; the parameters are passed as an array of types:</p>
+
+<PRE><CODE CLASS="Code">MethodInfo CosineInfo = </code>
+<CODE CLASS="Code">   theMathType.GetMethod(&quot;Cos&quot;,paramTypes);</code>
+</pre>
+
+<P CLASS="Body">Before calling <CODE CLASS="Literal">GetMethod</code>, you must prepare the array of types:</p>
+
+<PRE><CODE CLASS="Code">Type[] paramTypes = new Type[1];</code>
+<CODE CLASS="Code">paramTypes[0]= Type.GetType(&quot;System.Double&quot;);</code>
+</pre>
+
+<P CLASS="Body">This code declares the array of <CODE CLASS="Literal">Type</code> objects and then fills the first element (<CODE CLASS="Literal">paramTypes[0]</code>) with a <CODE CLASS="Literal">Type</code> representing a double. You obtain that type representing a double by calling the static method <CODE CLASS="Literal">Type.GetType()</code>, passing in the string "<CODE CLASS="Literal">System.Double&quot;</code>.</p>
+
+
+<P CLASS="Body">You now have an object of type <CODE CLASS="Literal">MethodInfo</code> on which you can invoke the method. To do so, you must pass in the actual value of the parameters, again in an array:</p>
+
+<PRE><CODE CLASS="Code">Object[] parameters = new Object[1];</code>
+<CODE CLASS="Code">parameters[0] = 45;</code>
+<CODE CLASS="Code">Object returnVal = CosineInfo.Invoke(theObj,parameters);</code>
+</pre>
+
+<blockquote>
+<P CLASS="NoteTip"><b>TIP:</b> &nbsp;
+Note that you've created two arrays. The first, <CODE CLASS="Literal">paramTypes</code>, holds the type of the parameters. The second, <CODE CLASS="Literal">parameters</code>, holds the actual value. If the method had taken two arguments, you'd have declared these arrays to hold two values. If the method took no values, you still would create the array, but you would give it a size of zero!
+<blockquote>
+<pre>
+Type[] paramTypes = new Type[0];
+</pre>
+</blockquote>
+
+<P CLASS="Note">Odd as this looks, it is correct.
+</blockquote>
+
+<P CLASS="Body"><A HREF="ch18.html#44519" CLASS="XRef">Example 18-7</a> illustrates dynamically calling the <CODE CLASS="Literal">Cos(  )</code> method.
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="44519">Example 18-7:</a></b> 
+<B class="ExampleTitle">Dynamically invoking a method </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class Tester</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         Type theMathType = Type.GetType(&quot;System.Math&quot;);</code>
+<CODE CLASS="Code">         Object theObj = </code>
+<CODE CLASS="Code">            Activator.CreateInstance(theMathType);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // array with one member</code>
+<CODE CLASS="Code">         Type[] paramTypes = new Type[1];</code>
+<CODE CLASS="Code">         paramTypes[0]= Type.GetType(&quot;System.Double&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Get method info for Cos(  )</code>
+<CODE CLASS="Code">         MethodInfo CosineInfo = </code>
+<CODE CLASS="Code">            theMathType.GetMethod(&quot;Cos&quot;,paramTypes);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // fill an array with the actual parameters</code>
+<CODE CLASS="Code">         Object[] parameters = new Object[1];</code>
+<CODE CLASS="Code">         parameters[0] = 45;</code>
+<CODE CLASS="Code">         Object returnVal = </code>
+<CODE CLASS="Code">            CosineInfo.Invoke(theObj,parameters);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;The cosine of a 45 degree angle {0}&quot;, </code>
+<CODE CLASS="Code">            returnVal);</code>
+<CODE CLASS="Code"> &nbsp;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">That was a lot of work just to invoke a single method. The power, however, is that you can use reflection to discover an assembly on the user's machine, use reflection to query what methods are available, and then use reflection to invoke one of those members dynamically!
+
+<H2 CLASS="HeadA">Reflection Emit</h2>
+
+
+<P CLASS="Body">So far we've seen reflection used for three purposes: viewing metadata, type discovery, and dynamic invocation. You might use these techniques when building tools (such as a development environment) or when processing scripts. The most powerful use of reflection, however, is with reflection emit.
+
+<P CLASS="Body"><EM CLASS="Filename">Reflection emit</em> supports the dynamic creation of new types at runtime. You can define an assembly to run dynamically or to save itself to disk, and you can define modules and new types with methods that you can then invoke.
+<BLOCKQUOTE>
+
+<P CLASS="NoteTip"><b>TIP:</b>&nbsp;
+The use of dynamic invocation and reflection emit should be considered an advanced topic. Most developers will never have need to use reflection emit. This demonstration is based on an example provided at the Microsoft Author's Summit, Fall 2000.
+</blockquote>
+
+<P CLASS="Body">To understand the power of reflection emit, you must first consider a slightly more complicated example of dynamic invocation.</p>
+
+
+<P CLASS="Body">Problems can have general solutions that are relatively slow and specific solutions that are fast. To keep things manageably simple, consider a <CODE CLASS="Literal">DoSum(  )</code> method, which provides the sum of a string of integers from 1<EM CLASS="Symbol">...</em><I CLASS="Replaceable">n</i>, where <I CLASS="Replaceable">n</i> will be supplied by the user.</p>
+
+
+<P CLASS="Body">Thus, <CODE CLASS="Literal">DoSum(3)</code> is equal to 1+2+3, or 6. <CODE CLASS="Literal">DoSum(10)</code> is 55. Writing this in C# is very simple:</p>
+
+<PRE><CODE CLASS="Code">public int DoSum1(int n)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    int result = 0;</code>
+<CODE CLASS="Code">    for(int i = 1;i &lt;= n; i++)</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">        result += i;</code>
+<CODE CLASS="Code">    }</code>
+<CODE CLASS="Code">    return result;</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">The method simply loops, adding the requisite number. If you pass in 3, the method adds 1 + 2 + 3 and returns an answer of 6.</p>
+
+
+<P CLASS="Body">With large numbers, and when run many times, this might be a bit slow. Given the value 20, this method would be considerably faster if you removed the loop:</p>
+
+<PRE><CODE CLASS="Code">public int DoSum2(  )</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    return 1+2+3+4+5+6+7+8+9+10+11+12+13+14+15+16+17+18+19+20;</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body"><CODE CLASS="Literal">DoSum2</code> runs more quickly than <CODE CLASS="Literal">DoSum1</code> does. How much more quickly? To find out, you'll need to put a timer on both methods. To do so, you'll use a <CODE CLASS="Literal">DateTime</code> object to mark the start time and a <CODE CLASS="Literal">TimeSpan</code> object to compute the elapsed time.</p>
+
+
+<P CLASS="Body">For this experiment, you need to create two <CODE CLASS="Literal">DoSum(  )</code> methods; the first will use the loop and the second will not. You will call each 1,000,000 times. (Computers are very fast, so to see a difference you have to work hard!) You'll then compare the times. <A HREF="ch18.html#33932" CLASS="XRef">Example 18-8</a> illustrates the entire test program.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="33932">Example 18-8:</a></b> 
+<B class="ExampleTitle">Comparing loop to brute force </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Diagnostics;</code>
+<CODE CLASS="Code">   using System.Threading;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class MyMath</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // sum numbers with a loop</code>
+<CODE CLASS="Code">      public int DoSum(int n)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         int result = 0;</code>
+<CODE CLASS="Code">         for(int i = 1; i &lt;= n; i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result += i;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         return result;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // brute force by hand</code>
+<CODE CLASS="Code">      public int DoSum2(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         return 1+2+3+4+5+6+7+8+9+10+11</code>
+<CODE CLASS="Code">            +12+13+14+15+16+17+18+19+20;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class TestDriver</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         const int val = 20;  // val to sum</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // 1,000,000 iterations</code>
+<CODE CLASS="Code">         const int iterations = 1000000;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // hold the answer</code>
+<CODE CLASS="Code">         int result = 0;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         MyMath m = new MyMath(  );            </code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // mark the start time   </code>
+<CODE CLASS="Code">         DateTime startTime = DateTime.Now;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run the experiment</code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result = m.DoSum(val);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         // mark the elapsed time</code>
+<CODE CLASS="Code">         TimeSpan elapsed = </code>
+<CODE CLASS="Code">            DateTime.Now - startTime;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // display the results</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Loop: Sum of ({0}) = {1}&quot;,</code>
+<CODE CLASS="Code">               val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;The elapsed time in milliseconds is: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds.ToString(  ));</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // mark a new start time</code>
+<CODE CLASS="Code">         startTime = DateTime.Now;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run the experiment</code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result = m.DoSum2(  );</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // mark the new elapsed time</code>
+<CODE CLASS="Code">         elapsed = DateTime.Now - startTime;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // display the results</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Brute Force: Sum of ({0}) = {1}&quot;,</code>
+<CODE CLASS="Code">               val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;The elapsed time in milliseconds is: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds);</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">}</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output:</em></code>
+<CODE CLASS="Code">Loop: Sum of (20) = 210</code>
+<CODE CLASS="Code">The elapsed time in milliseconds is: 187.5</code>
+<CODE CLASS="Code">Brute Force: Sum of (20) = 210</code>
+<CODE CLASS="Code">The elapsed time in milliseconds is: 31.25</code>
+</pre>
+
+<P CLASS="Body">As you can see, both methods returned the same answer (one million times!), but the brute-force method was six times faster.</p>
+
+
+<P CLASS="Body">Is there a way to avoid the loop and still provide a general solution? In traditional programming, the answer would be no, but with reflection you do have one other option. You can, at runtime, take the value the user wants (20, in this case) and write out to disk a class that implements the brute-force solution. You can then use dynamic invocation to invoke that method.</p>
+
+
+<P CLASS="Body">There are at least three ways to achieve this result, each increasingly elegant. The third, reflection emit, is the best, but a close look at two other techniques is instructive. If you are pressed for time, you might wish to jump ahead to the section entitled "<A HREF="ch18.html#17553" CLASS="XRef">Dynamic Invocation with Reflection Emit</a>,&quot; later in this chapter.</p>
+
+
+<H3 CLASS="HeadB">Dynamic Invocation with InvokeMember(  )</h3>
+
+
+<P CLASS="Body">The first approach will be to create a class named <CODE CLASS="Literal">BruteForceSums</code> dynamically, at runtime. The <CODE CLASS="Literal">BruteForceSums</code> class will contain a method, <CODE CLASS="Literal">ComputeSum(  )</code>, that implements the brute-force approach. You'll write that class to disk, compile it, and then use dynamic invocation to invoke its brute-force method by means of the <CODE CLASS="Literal">InvokeMember(  )</code> method of the <CODE CLASS="Literal">Type</code> class. The key point is that <EM CLASS="Filename">BruteForceSums.cs</em> won't exist until you run the program. You'll create it when you need it and supply its arguments then.</p>
+
+
+<P CLASS="Body">To accomplish this, you'll create a new class named <CODE CLASS="Literal">ReflectionTest</code>. The job of the <CODE CLASS="Literal">ReflectionTest</code> class is to create the <CODE CLASS="Literal">BruteForceSums</code> class, write it to disk, and compile it. <CODE CLASS="Literal">ReflectionTest</code> has only two methods: <CODE CLASS="Literal">DoSum</code> and <CODE CLASS="Literal">GenerateCode</code>.</p>
+
+
+<P CLASS="Body"><CODE CLASS="Literal">ReflectionTest.DoSum</code> is a public method that returns the sum, given a value. That is, if you pass in 10, it returns the sum of 1+2+3+4+5+6+7+8+9+10. It does this by creating the <CODE CLASS="Literal">BruteForceSums</code> class and delegating the job to its <CODE CLASS="Literal">ComputeSum</code> method.</p>
+
+
+<P CLASS="Body"><CODE CLASS="Literal">ReflectionTest</code> has two private fields:</p>
+
+<PRE><CODE CLASS="Code">Type theType = null;</code>
+<CODE CLASS="Code">object theClass = null;</code>
+</pre>
+
+<P CLASS="Body">The first is an object of type <CODE CLASS="Literal">Type</code>, which you use to load your class from disk, and the second is an object of type <CODE CLASS="Literal">object</code>, which you use to dynamically invoke the <CODE CLASS="Literal">ComputeSums(  )</code> method of the <CODE CLASS="Literal">BruteForceSums</code> class you'll create.</p>
+
+
+<P CLASS="Body">The driver program instantiates an instance of <CODE CLASS="Literal">ReflectionTest</code> and calls its <CODE CLASS="Literal">DoSum</code> method, passing in the value. For this version of the program, the value is increased to 200.</p>
+
+
+<P CLASS="Body">The <CODE CLASS="Literal">DoSum</code> method checks whether <CODE CLASS="Literal">theType</code> is null; if it is, the class has not been created yet. <CODE CLASS="Literal">DoSum</code> calls the helper method <CODE CLASS="Literal">GenerateCode</code> to generate the code for the <CODE CLASS="Literal">BruteForceSums</code> class and the class's <CODE CLASS="Literal">ComputeSums</code> method. <CODE CLASS="Literal">GenerateCode</code> then writes this newly created code to a <EM CLASS="Filename">.cs</em> file on disk and runs the compiler to turn it into an assembly on disk. Once this is completed, <CODE CLASS="Literal">DoSum</code> can call the method using reflection.</p>
+
+
+<P CLASS="Body">Once the class and method are created, you load the assembly from disk and assign the class type information to <CODE CLASS="Literal">theType</code>, and <CODE CLASS="Literal">DoSum</code> can use that to invoke the method dynamically to get the correct answer.</p>
+
+
+<P CLASS="Body">You begin by creating a constant for the value to which you'll sum:</p>
+
+<PRE><CODE CLASS="Code">const int val = 200;</code>
+</pre>
+
+<P CLASS="Body">Each time you compute a sum, it will be the sum of the values 1 to 200.</p>
+
+
+<P CLASS="Body">Before you create the dynamic class, you need to go back and re-create <CODE CLASS="Literal">MyMath</code>:</p>
+
+<PRE><CODE CLASS="Code">MyMath m = new MyMath(  );                      </code>
+</pre>
+
+<P CLASS="Body">Give <CODE CLASS="Literal">MyMath</code> a method <CODE CLASS="Literal">DoSumLooping</code>, much as you did in the previous example:</p>
+
+<PRE><CODE CLASS="Code">public int DoSumLooping (int initialVal)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    int result = 0;</code>
+<CODE CLASS="Code">    for(int i = 1;i &lt;=initialVal;i++)</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">        result += i;</code>
+<CODE CLASS="Code">    }</code>
+<CODE CLASS="Code">    return result;</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">This serves as a benchmark against which you can compare the performance of the brute-force method.</p>
+
+
+<P CLASS="Body">Now you're ready to create the dynamic class and compare its performance with the looping version. First, instantiate an object of type <CODE CLASS="Literal">ReflectionTest</code> and invoke the <CODE CLASS="Literal">DoSum(  )</code> method on that object:</p>
+
+<PRE><CODE CLASS="Code">ReflectionTest t = new ReflectionTest(  );</code>
+<CODE CLASS="Code">result = t.DoSum(val);</code>
+</pre>
+
+<P CLASS="Body"><CODE CLASS="Literal">ReflectionTest.DoSum</code> checks to see if its <CODE CLASS="Literal">Type</code> field, <CODE CLASS="Literal">theType</code>, is null. If it is, you haven't yet created and compiled the <CODE CLASS="Literal">BruteForceSums</code> class and must do so now:</p>
+
+<PRE><CODE CLASS="Code">if (theType == null)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    GenerateCode(theValue);</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">The <CODE CLASS="Literal">GenerateCode</code> method takes the value (in this case, 200) as a parameter to know how many values to add.</p>
+
+
+<P CLASS="Body"><CODE CLASS="Literal">GenerateCode</code> begins by creating a file on disk. The details of file I/O will be covered in Chapter 21. For now, I'll walk you through this quickly. First, call the static method <CODE CLASS="Literal">File.Open</code>, and pass in the filename and a flag indicating that you want to create the file. <CODE CLASS="Literal">File.Open</code> returns a <CODE CLASS="Literal">Stream</code> object:</p>
+
+<PRE><CODE CLASS="Code">string fileName = &quot;BruteForceSums&quot;;</code>
+<CODE CLASS="Code">Stream s = File.Open(fileName + &quot;.cs&quot;, FileMode.Create);</code>
+</pre>
+
+<P CLASS="Body">Once you have the <CODE CLASS="Literal">Stream</code>, you can create a <CODE CLASS="Literal">StreamWriter</code> so that you can write into that file:</p>
+
+<PRE><CODE CLASS="Code">StreamWriter wrtr = new StreamWriter(s);</code>
+</pre>
+
+<P CLASS="Body">You can now use the <CODE CLASS="Literal">WriteLine</code> methods of <CODE CLASS="Literal">StreamWriter</code> to write lines of text into the file. Begin the new file with a comment:</p>
+
+<PRE><CODE CLASS="Code">wrtr.WriteLine(&quot;// Dynamically created BruteForceSums class&quot;);</code>
+</pre>
+
+<P CLASS="Body">This writes the text:</p>
+
+<PRE><CODE CLASS="Code">// Dynamically created BruteForceSums class </code>
+</pre>
+
+<P CLASS="Body">to the file you've just created (<EM CLASS="Filename">BruteForceSums.cs</em>). Next, write out the class declaration:</p>
+
+<PRE><CODE CLASS="Code">string className = &quot;BruteForceSums&quot;;</code>
+<CODE CLASS="Code">wrtr.WriteLine(&quot;class {0}&quot;, className);</code>
+<CODE CLASS="Code">wrtr.WriteLine(&quot;{&quot;);</code>
+</pre>
+
+<P CLASS="Body">Within the braces of the class, you create the <CODE CLASS="Literal">ComputeSum</code> method:</p>
+
+<PRE><CODE CLASS="Code">wrtr.WriteLine(&quot;&#92;tpublic double ComputeSum(  )&quot;);</code>
+<CODE CLASS="Code">wrtr.WriteLine(&quot;&#92;t{&quot;);</code>
+<CODE CLASS="Code">wrtr.WriteLine(&quot;&#92;t// Brute force sum method&quot;);</code>
+<CODE CLASS="Code">wrtr.WriteLine(&quot;&#92;t// For value = {0}&quot;, theVal);</code>
+</pre>
+
+<P CLASS="Body">Now it is time to write out the addition statements. When you are done, you want the file to have this line:</p>
+
+<PRE><CODE CLASS="Code">return 0+1+2+3+4+5+6+7+8+9...</code>
+</pre>
+
+<P CLASS="Body">continuing up to <CODE CLASS="Literal">value</code> (in this case, 200):</p>
+
+<PRE><CODE CLASS="Code">wrtr.Write(&quot;&#92;treturn 0&quot;);</code>
+<CODE CLASS="Code">for (int i = 1;i&lt;=theVal;i++)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   wrtr.Write(&quot;+ {0}&quot;,i);</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">Notice how this works. What will be written to the file is:</p>
+
+<PRE><CODE CLASS="Code">&#92;treturn 0+ 1+ 2+ 3+...</code>
+</pre>
+
+<P CLASS="Body">The initial <CODE CLASS="Literal">&#92;t</code> causes the code to be indented in the source file.</p>
+
+
+<P CLASS="Body">When the loop completes, you end the return statement with a semicolon and then close the method and the class:</p>
+
+<PRE><CODE CLASS="Code">wrtr.WriteLine(&quot;;&quot;);</code>
+<CODE CLASS="Code">wrtr.WriteLine(&quot;&#92;t}&quot;);</code>
+<CODE CLASS="Code">wrtr.WriteLine(&quot;}&quot;);</code>
+</pre>
+
+<P CLASS="Body">Close the <CODE CLASS="Literal">streamWriter</code> and the stream, thus closing the file:</p>
+
+<PRE><CODE CLASS="Code">wrtr.Close(  );</code>
+<CODE CLASS="Code">s.Close(  );</code>
+</pre>
+
+<P CLASS="Body">When this runs, the <EM CLASS="Filename">BruteForceSums.cs</em> file will be written to disk. It will look like this:</p>
+
+<PRE><CODE CLASS="Code">// Dynamically created BruteForceSums class</code>
+<CODE CLASS="Code">class BruteForceSums</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    public double ComputeSum(  )</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">    // Brute force sum method</code>
+<CODE CLASS="Code">    // For value = 200</code>
+<CODE CLASS="Code">    return 0+ 1+ 2+ 3+ 4+ 5+ 6+ 7+ 8+ 9+ 10+ </code>
+<CODE CLASS="Code">11+ 12+ 13+ 14+ 15+ 16+ 17+ 18+ 19+ 20+ 21+ </code>
+<CODE CLASS="Code">22+ 23+ 24+ 25+ 26+ 27+ 28+ 29+ 30+ 31+ 32+ </code>
+<CODE CLASS="Code">33+ 34+ 35+ 36+ 37+ 38+ 39+ 40+ 41+ 42+ 43+ </code>
+<CODE CLASS="Code">44+ 45+ 46+ 47+ 48+ 49+ 50+ 51+ 52+ 53+ 54+ </code>
+<CODE CLASS="Code">55+ 56+ 57+ 58+ 59+ 60+ 61+ 62+ 63+ 64+ 65+ </code>
+<CODE CLASS="Code">66+ 67+ 68+ 69+ 70+ 71+ 72+ 73+ 74+ 75+ 76+ </code>
+<CODE CLASS="Code">77+ 78+ 79+ 80+ 81+ 82+ 83+ 84+ 85+ 86+ 87+ </code>
+<CODE CLASS="Code">88+ 89+ 90+ 91+ 92+ 93+ 94+ 95+ 96+ 97+ 98+ </code>
+<CODE CLASS="Code">99+ 100+ 101+ 102+ 103+ 104+ 105+ 106+ 107+ </code>
+<CODE CLASS="Code">108+ 109+ 110+ 111+ 112+ 113+ 114+ 115+ 116+ </code>
+<CODE CLASS="Code">117+ 118+ 119+ 120+ 121+ 122+ 123+ 124+ 125+ </code>
+<CODE CLASS="Code">126+ 127+ 128+ 129+ 130+ 131+ 132+ 133+ 134+ </code>
+<CODE CLASS="Code">135+ 136+ 137+ 138+ 139+ 140+ 141+ 142+ 143+ </code>
+<CODE CLASS="Code">144+ 145+ 146+ 147+ 148+ 149+ 150+ 151+ 152+ </code>
+<CODE CLASS="Code">153+ 154+ 155+ 156+ 157+ 158+ 159+ 160+ 161+ </code>
+<CODE CLASS="Code">162+ 163+ 164+ 165+ 166+ 167+ 168+ 169+ 170+ </code>
+<CODE CLASS="Code">171+ 172+ 173+ 174+ 175+ 176+ 177+ 178+ 179+ </code>
+<CODE CLASS="Code">180+ 181+ 182+ 183+ 184+ 185+ 186+ 187+ 188+ </code>
+<CODE CLASS="Code">189+ 190+ 191+ 192+ 193+ 194+ 195+ 196+ 197+ </code>
+<CODE CLASS="Code">198+ 199+ 200;</code>
+<CODE CLASS="Code">    }</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">This accomplishes the goal of dynamically creating a class with a method that finds the sum through brute force.</p>
+
+
+<P CLASS="Body">The only remaining task is to build the file and then use the method. To build the file, you must start a new process (processes are explained in some detail in Chapter 20). The best way to launch this process is with a <CODE CLASS="Literal">ProcessStartInfo</code> structure that will hold the command line. Instantiate a <CODE CLASS="Literal">ProcessStartInfo</code> and set its filename to <EM CLASS="Filename">cmd.exe</em>:</p>
+
+<PRE><CODE CLASS="Code">ProcessStartInfo psi = new ProcessStartInfo(  );</code>
+<CODE CLASS="Code"> psi.FileName = &quot;cmd.exe&quot;;</code>
+</pre>
+
+<P CLASS="Body">You need to pass in the string you want to invoke at the command line. The <CODE CLASS="Literal">ProcessStartInfo.Arguments</code> property specifies the command-line arguments to use when starting the program. The command-line argument to the <EM CLASS="Filename">cmd.exe</em> program will be <EM CLASS="Filename">/c</em> to tell <EM CLASS="Filename">cmd.exe</em> to exit after it executes the command, and then the command for <EM CLASS="Filename">cmd.exe</em>. The command for <EM CLASS="Filename">cmd.exe</em> is the command-line compile:</p>
+
+<PRE><CODE CLASS="Code">string compileString = &quot;/c csc /optimize+ &quot;;</code>
+<CODE CLASS="Code">compileString += &quot; /target:library &quot;;</code>
+<CODE CLASS="Code">compileString += &quot;{0}.cs &gt; compile.out&quot;;</code>
+</pre>
+
+<P CLASS="Body">The string <CODE CLASS="Literal">compileString</code> will invoke the C# compiler (<EM CLASS="Filename">csc</em>), telling it to optimize the code (after all, you're doing this to gain performance) and to build a dynamic link library (DLL) file (<EM CLASS="Filename">/target:library</em>). You redirect the output of the compile to a file named <EM CLASS="Filename">compile.out</em> so that you can examine it if there are errors.</p>
+
+
+<P CLASS="Body">You combine <CODE CLASS="Literal">compileString</code> with the filename, using the static method <CODE CLASS="Literal">Format</code> of the string class, and assign the combined string to <CODE CLASS="Literal">psi.Arguments</code>:</p>
+
+<PRE><CODE CLASS="Code">psi.Arguments = String.Format(compileString, fileName);</code>
+</pre>
+
+<P CLASS="Body">The effect of all this is to set the <CODE CLASS="Literal">Arguments</code> property of the <CODE CLASS="Literal">ProcessStartInfo</code> object <CODE CLASS="Literal">psi</code> to:</p>
+
+<PRE><CODE CLASS="Code">/c csc /optimize+ /target:library </code>
+<CODE CLASS="Code">BruteForceSums.cs &gt; compile.out</code>
+</pre>
+
+<P CLASS="Body">Before invoking <EM CLASS="Filename">cmd.exe,</em> you set the <CODE CLASS="Literal">WindowStyle</code> property of <CODE CLASS="Literal">psi</code> to <CODE CLASS="Literal">Minimized</code> so that when the command executes, the window does not flicker onto and then off of the user's display:</p>
+
+<PRE><CODE CLASS="Code">psi.WindowStyle = ProcessWindowStyle.Minimized;</code>
+</pre>
+
+<P CLASS="Body">You are now ready to start the <EM CLASS="Filename">cmd.exe</em> process, and you will wait until it finishes before proceeding with the rest of the <CODE CLASS="Literal">GenerateCode</code> method:</p>
+
+<PRE><CODE CLASS="Code">Process proc = Process.Start(psi);</code>
+<CODE CLASS="Code">proc.WaitForExit(  );</code>
+</pre>
+
+<P CLASS="Body">Once the process is done, you can get the assembly, and from the assembly, you can get the class you've created. Finally, you can ask that class for its type and assign that to your <CODE CLASS="Literal">theType</code> member variable:</p>
+
+<PRE><CODE CLASS="Code">Assembly a = Assembly.LoadFrom(fileName + &quot;.dll&quot;);</code>
+<CODE CLASS="Code">theClass = a.CreateInstance(className);</code>
+<CODE CLASS="Code">theType = a.GetType(className);</code>
+</pre>
+
+<P CLASS="Body">You can now delete the <EM CLASS="Filename">.cs</em> file you generated:</p>
+
+<PRE><CODE CLASS="Code">File.Delete(fileName + &quot;.cs&quot;);</code>
+</pre>
+
+<P CLASS="Body">You've now filled <CODE CLASS="Literal">theType</code>, and you're ready to return to <CODE CLASS="Literal">DoSum</code> to invoke the <CODE CLASS="Literal">ComputeSum</code> method dynamically. The <CODE CLASS="Literal">Type</code> object has a method <CODE CLASS="Literal">InvokeMember(  )</code>, which can be used to invoke a member of the class described by the <CODE CLASS="Literal">Type</code> object. The <CODE CLASS="Literal">InvokeMember</code> method is overloaded; the version you'll use takes five arguments:</p>
+
+<PRE><CODE CLASS="Code"><KBD CLASS="UserInput">public</kbd> <I CLASS="Replaceable">object</i> <KBD CLASS="UserInput">InvokeMember(</kbd></code>
+<CODE CLASS="Code">   <I CLASS="Replaceable">string name</i>,</code>
+<CODE CLASS="Code">   <I CLASS="Replaceable">BindingFlags invokeAttr</i>,</code>
+<CODE CLASS="Code">   <I CLASS="Replaceable">Binder binder</i>,</code>
+<CODE CLASS="Code">   <I CLASS="Replaceable">object target</i>,</code>
+<CODE CLASS="Code">   <I CLASS="Replaceable">object</i>[] args</code>
+<CODE CLASS="Code"><KBD CLASS="UserInput">)</kbd>;</code>
+</pre>
+<p>
+
+<dl>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">name</code></dt>
+<DD CLASS="ListVariable">Is the name of the method you wish to invoke.</dd>
+<p>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">invokeAttr</code></dt>
+<DD CLASS="ListVariable">Is a bit mask of <CODE CLASS="Literal">BindingFlags</code> that specify how the search of the object is conducted. In this case, you'll use the <CODE CLASS="Literal">InvokeMethod</code> flag OR'd with the <CODE CLASS="Literal">Default</code> flag. These are the standard flags for invoking a method dynamically.</dd>
+<p>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">binder</code></dt>
+<DD CLASS="ListVariable">Is used to assist in type conversions. By passing in<CODE CLASS="Literal"> null</code>, you'll specify that you want the default binder.</dd>
+<p>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">target</code></dt>
+<DD CLASS="ListVariable">Is the object on which you'll invoke the method. In this case, you'll pass in <CODE CLASS="Literal">theClass</code>, which is the class you just created from the assembly you just built.</dd>
+<p>
+<DT CLASS="ListVariableTerm"><CODE CLASS="Literal">args</code></dt>
+<DD CLASS="ListVariable">Is an array of arguments to pass to the method you're invoking.</dd>
+<p>
+</dl>
+
+<P CLASS="Body">The complete invocation of <CODE CLASS="Literal">InvokeMember</code> looks like this:</p>
+
+<PRE><CODE CLASS="Code">object[] arguments = new object[0];</code>
+<CODE CLASS="Code">object retVal =</code>
+<CODE CLASS="Code">    theType.InvokeMember(&quot;ComputeSum&quot;,</code>
+<CODE CLASS="Code">    BindingFlags.Default | </code>
+<CODE CLASS="Code">    BindingFlags.InvokeMethod,</code>
+<CODE CLASS="Code">    null,</code>
+<CODE CLASS="Code">    theClass,</code>
+<CODE CLASS="Code">    arguments);</code>
+<CODE CLASS="Code">return (double) retVal;</code>
+</pre>
+
+<P CLASS="Body">The result of invoking this method is assigned to the local variable<CODE CLASS="Literal"> retVal</code>, which is then returned, as a double, to the driver program. The complete listing is shown in <A HREF="ch18.html#20437" CLASS="XRef">Example 18-9</a>.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="20437">Example 18-9:</a></b> 
+<B class="ExampleTitle">Dynamic invocation with Type and InvokeMethod(  ) </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Diagnostics;</code>
+<CODE CLASS="Code">   using System.IO;</code>
+<CODE CLASS="Code">   using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // used to benchmark the looping approach</code>
+<CODE CLASS="Code">   public class MyMath</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // sum numbers with a loop</code>
+<CODE CLASS="Code">      public int DoSumLooping(int initialVal)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         int result = 0;</code>
+<CODE CLASS="Code">         for(int i = 1;i &lt;=initialVal;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result += i;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         return result;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // responsible for creating the BruteForceSums</code>
+<CODE CLASS="Code">   // class and compiling it and invoking the</code>
+<CODE CLASS="Code">   // DoSums method dynamically</code>
+<CODE CLASS="Code">   public class ReflectionTest</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // the public method called by the driver</code>
+<CODE CLASS="Code">      public double DoSum(int theValue)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         // if you don't have a reference</code>
+<CODE CLASS="Code">         // to the dynamically created class</code>
+<CODE CLASS="Code">         // create it</code>
+<CODE CLASS="Code">         if (theType == null)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            GenerateCode(theValue);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // with the reference to the dynamically </code>
+<CODE CLASS="Code">         // created class you can invoke the method </code>
+<CODE CLASS="Code">         object[] arguments = new object[0];</code>
+<CODE CLASS="Code">         object retVal =</code>
+<CODE CLASS="Code">            theType.InvokeMember(&quot;ComputeSum&quot;,</code>
+<CODE CLASS="Code">            BindingFlags.Default | </code>
+<CODE CLASS="Code">            BindingFlags.InvokeMethod,</code>
+<CODE CLASS="Code">            null,</code>
+<CODE CLASS="Code">            theClass,</code>
+<CODE CLASS="Code">            arguments);</code>
+<CODE CLASS="Code">         return (double) retVal;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // generate the code and compile it</code>
+<CODE CLASS="Code">      private void GenerateCode(int theVal)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         // open the file for writing</code>
+<CODE CLASS="Code">         string fileName = &quot;BruteForceSums&quot;;</code>
+<CODE CLASS="Code">         Stream s = </code>
+<CODE CLASS="Code">            File.Open(fileName + &quot;.cs&quot;, FileMode.Create);</code>
+<CODE CLASS="Code">         StreamWriter wrtr = new StreamWriter(s);</code>
+<CODE CLASS="Code">         wrtr.WriteLine(</code>
+<CODE CLASS="Code">            &quot;// Dynamically created BruteForceSums class&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // create the class</code>
+<CODE CLASS="Code">         string className = &quot;BruteForceSums&quot;;</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;class {0}&quot;, className);</code>
+<CODE CLASS="Code">         WriteLine(&quot;{&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // create the method</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;tpublic double ComputeSum(  )&quot;);</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t{&quot;);</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t// Brute force sum method&quot;);</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t// For value = {0}&quot;, theVal);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // write the brute force additions</code>
+<CODE CLASS="Code">         wrtr.Write(&quot;&#92;treturn 0&quot;);</code>
+<CODE CLASS="Code">         for (int i = 1;i&lt;=theVal;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            wrtr.Write(&quot;+ {0}&quot;,i);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;;&quot;);    // finish method</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t}&quot;);    // end method</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;}&quot;);    // end class</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // close the writer and the stream</code>
+<CODE CLASS="Code">         wrtr.Close(  );</code>
+<CODE CLASS="Code">         s.Close(  );</code>
+
+<CODE CLASS="Code">         // Build the file</code>
+<CODE CLASS="Code">         ProcessStartInfo psi = </code>
+<CODE CLASS="Code">            new ProcessStartInfo(  );</code>
+<CODE CLASS="Code">         psi.FileName = &quot;cmd.exe&quot;;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         string compileString = &quot;/c csc /optimize+ &quot;;</code>
+<CODE CLASS="Code">         compileString += &quot;/target:library &quot;;</code>
+<CODE CLASS="Code">         compileString += &quot;{0}.cs &gt; compile.out&quot;;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         psi.Arguments = </code>
+<CODE CLASS="Code">            String.Format(compileString, fileName);</code>
+<CODE CLASS="Code">         psi.WindowStyle = ProcessWindowStyle.Minimized;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         Process proc = Process.Start(psi);</code>
+<CODE CLASS="Code">         proc.WaitForExit(  );    // wait at most 2 seconds</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Open the file, and get a </code>
+<CODE CLASS="Code">         // pointer to the method info</code>
+<CODE CLASS="Code">         Assembly a = </code>
+<CODE CLASS="Code">            Assembly.LoadFrom(fileName + &quot;.dll&quot;);</code>
+<CODE CLASS="Code">         theClass = a.CreateInstance(className);</code>
+<CODE CLASS="Code">         theType = a.GetType(className);</code>
+<CODE CLASS="Code">         // File.Delete(fileName + &quot;.cs&quot;);  // clean up</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">      Type theType = null;</code>
+<CODE CLASS="Code">      object theClass = null;</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class TestDriver</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         const int val = 200;  // 1..200</code>
+<CODE CLASS="Code">         const int iterations = 100000;</code>
+<CODE CLASS="Code">         double result = 0;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run the benchmark</code>
+<CODE CLASS="Code">         MyMath m = new MyMath(  ); </code>
+<CODE CLASS="Code">         DateTime startTime = DateTime.Now;            </code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result = m.DoSumLooping(val);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         TimeSpan elapsed = </code>
+<CODE CLASS="Code">            DateTime.Now - startTime;</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Sum of ({0}) = {1}&quot;,val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Looping. Elapsed milliseconds: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds + </code>
+<CODE CLASS="Code">            &quot;for {0} iterations&quot;, iterations);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run our reflection alternative</code>
+<CODE CLASS="Code">         ReflectionTest t = new ReflectionTest(  );</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         startTime = DateTime.Now; </code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result = t.DoSum(val);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         elapsed = DateTime.Now - startTime;</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Sum of ({0}) = {1}&quot;,val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Brute Force. Elapsed milliseconds: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds  + </code>
+<CODE CLASS="Code">            &quot;for {0} iterations&quot;, iterations);</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">}</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output:</em></code>
+<CODE CLASS="Code">Sum of (200) = 20100</code>
+<CODE CLASS="Code">Looping. Elapsed milliseconds: </code>
+<CODE CLASS="Code">78.125 for 100000 iterations</code>
+<CODE CLASS="Code">Sum of (200) = 20100</code>
+<CODE CLASS="Code">Brute Force. Elapsed milliseconds: </code>
+<CODE CLASS="Code">3843.75 for 100000 iterations</code>
+</pre>
+
+<P CLASS="Body">Notice that the dynamically invoked method is <EM CLASS="Emphasis">far</em> slower than the loop. This is not a surprise; writing the file to disk, compiling it, reading it from disk, and invoking the method all bring significant overhead. You accomplished your goal, but it was a pyrrhic victory.</p>
+
+
+<H3 CLASS="HeadB">Dynamic Invocation with Interfaces</h3>
+
+
+<P CLASS="Body">It turns out that dynamic invocation is particularly slow. You want to maintain the general approach of writing the class at runtime and compiling it on the fly. But rather than using dynamic invocation, you'd just like to call the method. One way to speed things up is to use an interface to call the <CODE CLASS="Literal">ComputeSums(  )</code> method directly.</p>
+
+
+<P CLASS="Body">To accomplish this, you need to change <CODE CLASS="Literal">ReflectionTest.DoSum(  )</code> from:</p>
+
+<PRE><CODE CLASS="Code">public double DoSum(int theValue)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    if (theType == null)</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">        GenerateCode(theValue);</code>
+<CODE CLASS="Code">    }</code>
+<CODE CLASS="Code">    object[] arguments = new object[0];</code>
+<CODE CLASS="Code">    object retVal =</code>
+<CODE CLASS="Code">        theType.InvokeMember(&quot;ComputeSum&quot;,</code>
+<CODE CLASS="Code">        BindingFlags.Default | BindingFlags.InvokeMethod,</code>
+<CODE CLASS="Code">        null,</code>
+<CODE CLASS="Code">        theFunction,</code>
+<CODE CLASS="Code">        arguments);</code>
+<CODE CLASS="Code">    return (double) retVal;</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">to the following:</p>
+
+<PRE><CODE CLASS="Code">public double DoSum(int theValue)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    if (theComputer == null)</code>
+<CODE CLASS="Code">    {</code>
+<CODE CLASS="Code">        GenerateCode(theValue);</code>
+<CODE CLASS="Code">    }</code>
+<CODE CLASS="Code">    return (theComputer.ComputeSum(  ));</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">In this example, <CODE CLASS="Literal">theComputer</code> is an interface to an object of type <CODE CLASS="Literal">BruteForceSum</code>. It must be an interface and not an object because when you compile this program, <CODE CLASS="Literal">theComputer</code> won't yet exist; you'll create it dynamically.</p>
+
+
+<P CLASS="Body">Remove the declarations for <CODE CLASS="Literal">thetype</code> and <CODE CLASS="Literal">theFunction</code> and replace them with:</p>
+
+<PRE><CODE CLASS="Code">IComputer theComputer = null;</code>
+</pre>
+
+<P CLASS="Body">This declares <CODE CLASS="Literal">theComputer</code> to be an <CODE CLASS="Literal">IComputer</code> interface. At the top of your program, declare the interface:</p>
+
+<PRE><CODE CLASS="Code">public interface IComputer</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    double ComputeSum(  );</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">When you create the <CODE CLASS="Literal">BruteForceSum</code> class, you must make it implement <CODE CLASS="Literal">Icomputer</code>:</p>
+
+<PRE><CODE CLASS="Code">wrtr.WriteLine(</code>
+<CODE CLASS="Code">&quot;class {0} : Programming_CSharp.IComputer &quot;, </code>
+<CODE CLASS="Code">className); </code>
+</pre>
+
+<P CLASS="Body">Save your program in a project file named Reflection, and modify <CODE CLASS="Literal">compileString</code> in <CODE CLASS="Literal">GenerateCode</code> as follows:</p>
+
+<PRE><CODE CLASS="Code">string compileString = &quot;/c csc /optimize+ &quot;;</code>
+<CODE CLASS="Code">compileString += &quot;/r:&#92;&quot;Reflection.exe&#92;&quot; &quot;;</code>
+<CODE CLASS="Code">compileString += &quot;/target:library &quot;;</code>
+<CODE CLASS="Code">compileString += &quot;{0}.cs &gt; compile.out&quot;;</code>
+</pre>
+
+<P CLASS="Body">The compile string will need to reference the ReflectionTest program itself (<EM CLASS="Emphasis">Reference.exe</em>) so that the dynamically called compiler will know where to find the declaration of <CODE CLASS="Literal">IComputer</code>.</p>
+
+
+<P CLASS="Body">After you build the assembly, you will no longer assign the instance to <CODE CLASS="Literal">theClass</code> and then get the type for <CODE CLASS="Literal">theType</code>, as these variables are gone. Instead, you will assign the instance to the interface <CODE CLASS="Literal">IComputer</code>:</p>
+
+<PRE><CODE CLASS="Code">theComputer = (IComputer) a.CreateInstance(className);</code>
+</pre>
+
+<P CLASS="Body"><CODE CLASS="Literal">Y</code>ou use the interface to invoke the method directly in <CODE CLASS="Literal">DoSum</code>:</p>
+
+<PRE><CODE CLASS="Code">return (theComputer.ComputeSum(  ));</code>
+</pre>
+
+<P CLASS="Body"><A HREF="ch18.html#16421" CLASS="XRef">Example 18-10</a> is the complete source code.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="16421">Example 18-10:</a></b> 
+<B class="ExampleTitle">Dynamic invocation with interfaces </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Diagnostics;</code>
+<CODE CLASS="Code">   using System.IO;</code>
+<CODE CLASS="Code">   using System.Reflection;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // used to benchmark the looping approach</code>
+<CODE CLASS="Code">   public class MyMath</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // sum numbers with a loop</code>
+<CODE CLASS="Code">      public int DoSumLooping(int initialVal)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         int result = 0;</code>
+<CODE CLASS="Code">         for(int i = 1;i &lt;=initialVal;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result += i;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         return result;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<code class="CodeEmphasis"><b>   public interface IComputer</b></code>
+<code class="CodeEmphasis"><b>   {</b></code>
+<code class="CodeEmphasis"><b>      double ComputeSum(  );</b></code>
+<code class="CodeEmphasis"><b>   }</b></code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // responsible for creating the BruteForceSums</code>
+<CODE CLASS="Code">   // class and compiling it and invoking the</code>
+<CODE CLASS="Code">   // DoSums method dynamically</code>
+<CODE CLASS="Code">   public class ReflectionTest</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // the public method called by the driver</code>
+<CODE CLASS="Code">      public double DoSum(int theValue)</code>
+<CODE CLASS="Code">      {</code>
+<code class="CodeEmphasis"><b>         if (theComputer == null)</b></code>
+<code class="CodeEmphasis"><b>         {</b></code>
+<code class="CodeEmphasis"><b>            GenerateCode(theValue);</b></code>
+<code class="CodeEmphasis"><b>         }</b></code>
+<code class="CodeEmphasis"><b>         return (theComputer.ComputeSum(  ));</b></code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // generate the code and compile it</code>
+<CODE CLASS="Code">      private void GenerateCode(int theVal)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         // open the file for writing</code>
+<CODE CLASS="Code">         string fileName = &quot;BruteForceSums&quot;;</code>
+<CODE CLASS="Code">         Stream s = </code>
+<CODE CLASS="Code">            File.Open(fileName + &quot;.cs&quot;, FileMode.Create);</code>
+<CODE CLASS="Code">            StreamWriter wrtr = new StreamWriter(s);</code>
+<CODE CLASS="Code">            wrtr.WriteLine(</code>
+<CODE CLASS="Code">            &quot;// Dynamically created BruteForceSums class&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // create the class</code>
+<code class="CodeEmphasis"><b>         string className = &quot;BruteForceSums&quot;;</b></code>
+<code class="CodeEmphasis"><b>         wrtr.WriteLine(</b></code>
+<code class="CodeEmphasis"><b>            &quot;class {0} : Programming_CSharp.IComputer &quot;, </b></code>
+<code class="CodeEmphasis"><b>            className);</b></code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;{&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // create the method</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;tpublic double ComputeSum(  )&quot;);</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t{&quot;);</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t// Brute force sum method&quot;);</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t// For value = {0}&quot;, theVal);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // write the brute force additions</code>
+<CODE CLASS="Code">         wrtr.Write(&quot;&#92;treturn 0&quot;);</code>
+<CODE CLASS="Code">         for (int i = 1;i&lt;=theVal;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            wrtr.Write(&quot;+ {0}&quot;,i);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;;&quot;);    // finish method</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;&#92;t}&quot;);    // end method</code>
+<CODE CLASS="Code">         wrtr.WriteLine(&quot;}&quot;);    // end class</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // close the writer and the stream</code>
+<CODE CLASS="Code">         wrtr.Close(  );</code>
+<CODE CLASS="Code">         s.Close(  );</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Build the file</code>
+<CODE CLASS="Code">         ProcessStartInfo psi = </code>
+<CODE CLASS="Code">            new ProcessStartInfo(  );</code>
+<CODE CLASS="Code">         psi.FileName = &quot;cmd.exe&quot;;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<code class="CodeEmphasis"><b>         string compileString = &quot;/c csc /optimize+ &quot;;</b></code>
+<code class="CodeEmphasis"><b>         compileString += &quot;/r:&#92;&quot;Reflection.exe&#92;&quot; &quot;;</b></code>
+<code class="CodeEmphasis"><b>         compileString += &quot;/target:library &quot;;</b></code>
+<code class="CodeEmphasis"><b>         compileString += &quot;{0}.cs &gt; compile.out&quot;;</b></code>
+<code class="CodeEmphasis"><b>&nbsp;</b></code>
+<CODE CLASS="Code">         psi.Arguments = </code>
+<CODE CLASS="Code">            String.Format(compileString, fileName);</code>
+<CODE CLASS="Code">         psi.WindowStyle = ProcessWindowStyle.Minimized;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         Process proc = Process.Start(psi);</code>
+<CODE CLASS="Code">         proc.WaitForExit(  );    // wait at most 2 seconds</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Open the file, and get a </code>
+<CODE CLASS="Code">         // pointer to the method info</code>
+<code class="CodeEmphasis"><b>         Assembly a = </b></code>
+<code class="CodeEmphasis"><b>            Assembly.LoadFrom(fileName + &quot;.dll&quot;);</b></code>
+<code class="CodeEmphasis"><b>         theComputer = (IComputer)  a.CreateInstance(className);</b></code>
+<code class="CodeEmphasis"><b>         File.Delete(fileName + &quot;.cs&quot;);  // clean up</b></code>
+<code class="CodeEmphasis"><b>      }</b></code>
+<code class="CodeEmphasis"><b>      IComputer theComputer = null;</b></code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class TestDriver</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         const int val = 200;  // 1..200</code>
+<CODE CLASS="Code">         const int iterations = 100000;</code>
+<CODE CLASS="Code">         double result = 0;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run the benchmark</code>
+<CODE CLASS="Code">         MyMath m = new MyMath(  ); </code>
+<CODE CLASS="Code">         DateTime startTime = DateTime.Now;            </code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result = m.DoSumLooping(val);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         TimeSpan elapsed = </code>
+<CODE CLASS="Code">            DateTime.Now - startTime;</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Sum of ({0}) = {1}&quot;,val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Looping. Elapsed milliseconds: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds + </code>
+<CODE CLASS="Code">            &quot; for {0} iterations&quot;, iterations);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run our reflection alternative</code>
+<CODE CLASS="Code">         ReflectionTest t = new ReflectionTest(  );</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         startTime = DateTime.Now; </code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result = t.DoSum(val);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         elapsed = DateTime.Now - startTime;</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Sum of ({0}) = {1}&quot;,val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Brute Force. Elapsed milliseconds: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds  + </code>
+<CODE CLASS="Code">            &quot; for {0} iterations&quot;, iterations);</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">}</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output:</em></code>
+<CODE CLASS="Code">Sum of (200) = 20100</code>
+<CODE CLASS="Code">Looping. Elapsed milliseconds: </code>
+<CODE CLASS="Code">140.625 for 100000 iterations</code>
+<CODE CLASS="Code">Sum of (200) = 20100</code>
+<CODE CLASS="Code">Brute Force. Elapsed milliseconds: </code>
+<CODE CLASS="Code">875 for 100000 iterations</code>
+</pre>
+
+<P CLASS="Body">This output is much more satisfying; our dynamically created brute-force method now runs nearly twice as fast as the loop does. But you can do a lot better than that with reflection emit.</p>
+
+
+<H3 CLASS="HeadB"><A NAME="17553"></a>Dynamic Invocation with Reflection Emit</h3>
+
+
+<P CLASS="Body">So far you've created an assembly on the fly by writing its source code to disk and then compiling that source code. You then dynamically invoked the method you wanted to use from that assembly, which was compiled on disk. That brings a lot of overhead, and what have you accomplished? When you're done with writing the file to disk, you have source code you can compile, and when you're done compiling, you have IL (Intermediate Language) op codes on disk you can ask the .NET Framework to run.</p>
+
+
+<P CLASS="Body">Reflection emit allows you to skip a few steps and just &quot;emit&quot; the op codes directly. This is writing assembly code directly from your C# program and then invoking the result. It just doesn't get any cooler than that.</p>
+
+
+<P CLASS="Body">You start much as you did in the previous examples. You create a constant for the number to add to (200) and the number of iterations (1,000,000). You then re-create the <CODE CLASS="Literal">myMath</code> class as a benchmark.</p>
+
+
+<P CLASS="Body">Once again you have a <CODE CLASS="Literal">ReflectionTest</code> class, and once again you call <CODE CLASS="Literal">DoSum</code>, passing in the value:</p>
+
+<PRE><CODE CLASS="Code">ReflectionTest t = new ReflectionTest(  );</code>
+<CODE CLASS="Code">result = t.DoSum(val);</code>
+</pre>
+
+<P CLASS="Body"><CODE CLASS="Literal">DoSum</code> itself is virtually unchanged:</p>
+
+<PRE><CODE CLASS="Code">public double DoSum(int theValue)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   if (theComputer == null)</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      GenerateCode(theValue);</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // call the method through the interface</code>
+<CODE CLASS="Code">   return (theComputer.ComputeSum(  ));</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">As you can see, you will use an interface again, but this time you are not going to write a file to disk.</p>
+
+
+<P CLASS="Body"><CODE CLASS="Literal">GenerateCode</code> is quite different now. You no longer write the file to disk and compile it; instead you call the helper method <CODE CLASS="Literal">EmitAssembly</code> and get back an assembly. You then create an instance from that assembly and cast that instance to your interface.</p>
+
+<PRE><CODE CLASS="Code">public void GenerateCode(int theValue)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   Assembly theAssembly = EmitAssembly(theValue);</code>
+<CODE CLASS="Code">   theComputer = (IComputer) </code>
+<CODE CLASS="Code">      theAssembly.CreateInstance(&quot;BruteForceSums&quot;);</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">As you might have guessed, the magic is stashed away in the <CODE CLASS="Literal">EmitAssembly</code> method:</p>
+
+<PRE><CODE CLASS="Code">private Assembly EmitAssembly(int theValue)</code>
+</pre>
+
+<P CLASS="Body">The value you pass in is the sum you want to compute. To see the power of reflection emit, you'll increase that value from 200 to 2,000.</p>
+
+
+<P CLASS="Body">The first thing to do in <CODE CLASS="Literal">EmitAssembly</code> is to create an object of type <CODE CLASS="Literal">AssemblyName</code> and give that <CODE CLASS="Literal">AssemblyName</code> object the name "<CODE CLASS="Literal">DoSumAssembly&quot;</code>:</p>
+
+<PRE><CODE CLASS="Code">AssemblyName assemblyName = new AssemblyName(  );</code>
+<CODE CLASS="Code">assemblyName.Name = &quot;DoSumAssembly&quot;;</code>
+</pre>
+
+<P CLASS="Body">An <CODE CLASS="Literal">AssemblyName</code> is an object that fully describes an assembly's unique identity. As discussed in Chapter 13, an assembly's identity consists of a simple name (<CODE CLASS="Literal">DoSumAssembly</code>), a version number, a cryptographic key pair, and a supported culture.</p>
+
+
+<P CLASS="Body">With this object in hand, you can create a new <CODE CLASS="Literal">AssemblyBuilder</code> object. To do so, you call <CODE CLASS="Literal">DefineDynamicAssembly</code> on the current domain, which you get by calling the static <CODE CLASS="Literal">GetDomain(  )</code> method of the <CODE CLASS="Literal">Thread</code> object. Domains are discussed in detail in Chapter 19.</p>
+
+
+<P CLASS="Body">The parameters to the <CODE CLASS="Literal">GetDomain(  )</code>method are the <CODE CLASS="Literal">AssemblyName</code> object you just created and an <CODE CLASS="Literal">AssemblyBuilderAccess</code> enumeration value (one of <CODE CLASS="Literal">Run</code>, <CODE CLASS="Literal">RunandSave</code>, or <CODE CLASS="Literal">Save</code>). You'll use <CODE CLASS="Literal">Run</code> in this case to indicate that the assembly can be run but not saved:</p>
+
+<PRE><CODE CLASS="Code">AssemblyBuilder newAssembly =</code>
+<CODE CLASS="Code">     Thread.GetDomain(  ).DefineDynamicAssembly(assemblyName,</code>
+<CODE CLASS="Code">          AssemblyBuilderAccess.Run);</code>
+</pre>
+
+<P CLASS="Body">With this newly created <CODE CLASS="Literal">AssemblyBuilder</code> object, you are ready to create a <CODE CLASS="Literal">ModuleBuilder</code> object. The job of the <CODE CLASS="Literal">ModuleBuilder</code>, not surprisingly, is to build a module dynamically. Modules are discussed in Chapter 17. You call the <CODE CLASS="Literal">DefineDynamicModule</code> method, passing in the name of the method you want to create:</p>
+
+<PRE><CODE CLASS="Code">ModuleBuilder newModule = </code>
+<CODE CLASS="Code">newAssembly.DefineDynamicModule(&quot;Sum&quot;);</code>
+</pre>
+
+<P CLASS="Body">Now, given that module, you can define a public class and get back a <CODE CLASS="Literal">TypeBuilder</code> object. <CODE CLASS="Literal">TypeBuilder</code> is the root class used to control the dynamic creation of classes. With a <CODE CLASS="Literal">TypeBuilder</code> object, you can define classes and add methods and fields:</p>
+
+<PRE><CODE CLASS="Code">TypeBuilder myType =</code>
+<CODE CLASS="Code">newModule.DefineType(&quot;BruteForceSums&quot;, TypeAttributes.Public);</code>
+</pre>
+
+<P CLASS="Body">You are now ready to mark the new class as implementing the <CODE CLASS="Literal">IComputer</code> interface:</p>
+
+<PRE><CODE CLASS="Code">myType.AddInterfaceImplementation(typeof(IComputer));</code>
+</pre>
+
+<P CLASS="Body">You're almost ready to create the <CODE CLASS="Literal">ComputeSum</code> method, but first you must set up the array of parameters. Because you have no parameters at all, you create an array of zero length:</p>
+
+<PRE><CODE CLASS="Code">Type[] paramTypes = new Type[0]; </code>
+</pre>
+
+<P CLASS="Body">You then create a <CODE CLASS="Literal">Type</code> object to hold the return type for your method:</p>
+
+<PRE><CODE CLASS="Code">Type returnType = typeof(int);</code>
+</pre>
+
+<P CLASS="Body">You're ready to create the method. The <CODE CLASS="Literal">DefineMethod(  )</code> method of <CODE CLASS="Literal">TypeBuilder</code> will both create the method and return an object of type <CODE CLASS="Literal">MethodBuilder</code>, which you will use to generate the IL code:</p>
+
+<PRE><CODE CLASS="Code">MethodBuilder simpleMethod =</code>
+<CODE CLASS="Code">myType.DefineMethod(&quot;ComputeSum&quot;,</code>
+<CODE CLASS="Code">               MethodAttributes.Public | </code>
+<CODE CLASS="Code">                  MethodAttributes.Virtual,</code>
+<CODE CLASS="Code">               returnType,</code>
+<CODE CLASS="Code">               paramTypes);</code>
+</pre>
+
+<P CLASS="Body">You pass in the name of the method, the flags you want (<CODE CLASS="Literal">public</code> and <CODE CLASS="Literal">virtual</code>), the return type (<CODE CLASS="Literal">int</code>), and the <CODE CLASS="Literal">paramTypes</code> (the zero length array).</p>
+
+
+<P CLASS="Body">You then use the <CODE CLASS="Literal">MethodBuilder</code> object you created to get an <CODE CLASS="Literal">ILGenerator</code> object:</p>
+
+<PRE><CODE CLASS="Code">ILGenerator generator = simpleMethod.GetILGenerator(  );</code>
+</pre>
+
+<P CLASS="Body">With your precious <CODE CLASS="Literal">ILGenerator</code> object in hand, you are ready to emit the op codes. These are the very op codes that the C# compiler would have created. (In fact, the best way to get the op codes is to write a small C# program, compile it, and then examine the op codes in ILDasm!)</p>
+
+
+<P CLASS="Body">First emit the value <CODE CLASS="Literal">0</code> to the stack. Then loop through the number values you want to add (<CODE CLASS="Literal">1</code> through <CODE CLASS="Literal">200</code>), adding each to the stack in turn, adding the previous sum to the new number and leaving the result on the stack:</p>
+
+<PRE><CODE CLASS="Code">generator.Emit(OpCodes.Ldc_I4, 0);</code>
+<CODE CLASS="Code">for (int i = 1; i &lt;= theValue;i++)</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">    generator.Emit(OpCodes.Ldc_I4, i);</code>
+<CODE CLASS="Code">    generator.Emit(OpCodes.Add);</code>
+<CODE CLASS="Code">}</code>
+</pre>
+
+<P CLASS="Body">The value that remains on the stack is the sum you want, so you'll return it:</p>
+
+<PRE><CODE CLASS="Code">generator.Emit(OpCodes.Ret);</code>
+</pre>
+
+<P CLASS="Body">You're ready now to create a <CODE CLASS="Literal">MethodInfo</code> object that will describe the method:</p>
+
+<PRE><CODE CLASS="Code">MethodInfo computeSumInfo =</code>
+<CODE CLASS="Code">    typeof(IComputer).GetMethod(&quot;ComputeSum&quot;);</code>
+</pre>
+
+<P CLASS="Body">Now you must specify the implementation that will implement the method. You call <CODE CLASS="Literal">DefineMethodOverride</code> on the <CODE CLASS="Literal">TypeBuilder</code> object you created earlier, passing in the <CODE CLASS="Literal">MethodBuilder</code> you created, along with the <CODE CLASS="Literal">MethodInfo</code> object you just created:</p>
+
+<PRE><CODE CLASS="Code">myType.DefineMethodOverride(simpleMethod, computeSumInfo);</code>
+</pre>
+
+<P CLASS="Body">You're just about done; create the class and return the assembly:</p>
+
+<PRE><CODE CLASS="Code">myType.CreateType(  );</code>
+<CODE CLASS="Code">return newAssembly;</code>
+</pre>
+
+<P CLASS="Body">OK, I didn't say it was easy, but it is really cool, and the resulting code runs very fast. The normal loop runs 1,000,000 iterations in 11.5 seconds, but the emitted code runs in .4 second! A full 3,000% faster. <A HREF="ch18.html#80706" CLASS="XRef">Example 18-11</a> is the full source code.</p>
+
+<p>
+<CAPTION>
+<B class="ExampleLabel"><a name="80706">Example 18-11:</a></b> 
+<B class="ExampleTitle">Dynamic invocation with reflection emit </b> 
+</caption>
+<PRE><CODE CLASS="Code">namespace Programming_CSharp</code>
+<CODE CLASS="Code">{</code>
+<CODE CLASS="Code">   using System;</code>
+<CODE CLASS="Code">   using System.Diagnostics;</code>
+<CODE CLASS="Code">   using System.IO;</code>
+<CODE CLASS="Code">   using System.Reflection;</code>
+<CODE CLASS="Code">   using System.Reflection.Emit;</code>
+<CODE CLASS="Code">   using System.Threading;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // used to benchmark the looping approach</code>
+<CODE CLASS="Code">   public class MyMath</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // sum numbers with a loop</code>
+<CODE CLASS="Code">      public int DoSumLooping(int initialVal)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         int result = 0;</code>
+<CODE CLASS="Code">         for(int i = 1;i &lt;=initialVal;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result += i;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         return result;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   // declare the interface</code>
+<CODE CLASS="Code">   public interface IComputer</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      int ComputeSum(  );</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class ReflectionTest</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      // the private method which emits the assembly</code>
+<CODE CLASS="Code">      // using op codes</code>
+<CODE CLASS="Code">      private Assembly EmitAssembly(int theValue)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         // Create an assembly name</code>
+<CODE CLASS="Code">         AssemblyName assemblyName = </code>
+<CODE CLASS="Code">            new AssemblyName(  );</code>
+<CODE CLASS="Code">         assemblyName.Name = &quot;DoSumAssembly&quot;;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Create a new assembly with one module</code>
+<CODE CLASS="Code">         AssemblyBuilder newAssembly =</code>
+<CODE CLASS="Code">            Thread.GetDomain(  ).DefineDynamicAssembly(</code>
+<CODE CLASS="Code">            assemblyName, AssemblyBuilderAccess.Run);</code>
+<CODE CLASS="Code">         ModuleBuilder newModule =</code>
+<CODE CLASS="Code">            newAssembly.DefineDynamicModule(&quot;Sum&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         //  Define a public class named &quot;BruteForceSums &quot; </code>
+<CODE CLASS="Code">         //  in the assembly.</code>
+<CODE CLASS="Code">         TypeBuilder myType =</code>
+<CODE CLASS="Code">            newModule.DefineType(</code>
+<CODE CLASS="Code">            &quot;BruteForceSums&quot;, TypeAttributes.Public);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Mark the class as implementing IComputer.</code>
+<CODE CLASS="Code">         myType.AddInterfaceImplementation(</code>
+<CODE CLASS="Code">            typeof(IComputer));</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Define a method on the type to call. Pass an</code>
+<CODE CLASS="Code">         // array that defines the types of the parameters,</code>
+<CODE CLASS="Code">         // the type of the return type, the name of the </code>
+<CODE CLASS="Code">         // method, and the method attributes.</code>
+<CODE CLASS="Code">         Type[] paramTypes = new Type[0];</code>
+<CODE CLASS="Code">         Type returnType = typeof(int);</code>
+<CODE CLASS="Code">         MethodBuilder simpleMethod =</code>
+<CODE CLASS="Code">            myType.DefineMethod(</code>
+<CODE CLASS="Code">            &quot;ComputeSum&quot;,</code>
+<CODE CLASS="Code">            MethodAttributes.Public | </code>
+<CODE CLASS="Code">            MethodAttributes.Virtual,</code>
+<CODE CLASS="Code">            returnType,</code>
+<CODE CLASS="Code">            paramTypes);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Get an ILGenerator. This is used</code>
+<CODE CLASS="Code">         // to emit the IL that you want.</code>
+<CODE CLASS="Code">         ILGenerator generator = </code>
+<CODE CLASS="Code">            simpleMethod.GetILGenerator(  );</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Emit the IL that you'd get if you </code>
+<CODE CLASS="Code">         // compiled the code example </code>
+<CODE CLASS="Code">         // and then ran ILDasm on the output.</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Push zero onto the stack. For each 'i' </code>
+<CODE CLASS="Code">         // less than 'theValue', </code>
+<CODE CLASS="Code">         // push 'i' onto the stack as a constant</code>
+<CODE CLASS="Code">         // add the two values at the top of the stack.</code>
+<CODE CLASS="Code">         // The sum is left on the stack.</code>
+<CODE CLASS="Code">         generator.Emit(OpCodes.Ldc_I4, 0);</code>
+<CODE CLASS="Code">         for (int i = 1; i &lt;= theValue;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            generator.Emit(OpCodes.Ldc_I4, i);</code>
+<CODE CLASS="Code">            generator.Emit(OpCodes.Add);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // return the value</code>
+<CODE CLASS="Code">         generator.Emit(OpCodes.Ret);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         //Encapsulate information about the method and</code>
+<CODE CLASS="Code">         //provide access to the method's metadata</code>
+<CODE CLASS="Code">         MethodInfo computeSumInfo =</code>
+<CODE CLASS="Code">            typeof(IComputer).GetMethod(&quot;ComputeSum&quot;);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // specify the method implementation.</code>
+<CODE CLASS="Code">         // Pass in the MethodBuilder that was returned </code>
+<CODE CLASS="Code">         // by calling DefineMethod and the methodInfo </code>
+<CODE CLASS="Code">         // just created</code>
+<CODE CLASS="Code">         myType.DefineMethodOverride(simpleMethod, computeSumInfo);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // Create the type.</code>
+<CODE CLASS="Code">         myType.CreateType(  );</code>
+<CODE CLASS="Code">         return newAssembly;</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // check if the interface is null</code>
+<CODE CLASS="Code">      // if so, call Setup.</code>
+<CODE CLASS="Code">      public double DoSum(int theValue)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         if (theComputer == null)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            GenerateCode(theValue);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // call the method through the interface</code>
+<CODE CLASS="Code">         return (theComputer.ComputeSum(  ));</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // emit the assembly, create an instance </code>
+<CODE CLASS="Code">      // and get the interface</code>
+<CODE CLASS="Code">      public void GenerateCode(int theValue)</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         Assembly theAssembly = EmitAssembly(theValue);</code>
+<CODE CLASS="Code">         theComputer = (IComputer) </code>
+<CODE CLASS="Code">            theAssembly.CreateInstance(&quot;BruteForceSums&quot;);</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">      // private member data</code>
+<CODE CLASS="Code">      IComputer theComputer = null;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">   public class TestDriver</code>
+<CODE CLASS="Code">   {</code>
+<CODE CLASS="Code">      public static void Main(  )</code>
+<CODE CLASS="Code">      {</code>
+<CODE CLASS="Code">         const int val = 2000;  // Note 2,000</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // 1 million iterations!</code>
+<CODE CLASS="Code">         const int iterations = 1000000;</code>
+<CODE CLASS="Code">         double result = 0;</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run the benchmark</code>
+<CODE CLASS="Code">         MyMath m = new MyMath(  ); </code>
+<CODE CLASS="Code">         DateTime startTime = DateTime.Now;            </code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">            result = m.DoSumLooping(val);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">         TimeSpan elapsed = </code>
+<CODE CLASS="Code">            DateTime.Now - startTime;</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Sum of ({0}) = {1}&quot;,val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Looping. Elapsed milliseconds: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds + </code>
+<CODE CLASS="Code">            &quot; for {0} iterations&quot;, iterations);</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         // run our reflection alternative</code>
+<CODE CLASS="Code">         ReflectionTest t = new ReflectionTest(  );</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         startTime = DateTime.Now; </code>
+<CODE CLASS="Code">         for (int i = 0;i &lt; iterations;i++)</code>
+<CODE CLASS="Code">         {</code>
+<CODE CLASS="Code">            result = t.DoSum(val);</code>
+<CODE CLASS="Code">         }</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code">         elapsed = DateTime.Now - startTime;</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Sum of ({0}) = {1}&quot;,val, result);</code>
+<CODE CLASS="Code">         Console.WriteLine(</code>
+<CODE CLASS="Code">            &quot;Brute Force. Elapsed milliseconds: &quot; + </code>
+<CODE CLASS="Code">            elapsed.TotalMilliseconds  + </code>
+<CODE CLASS="Code">            &quot; for {0} iterations&quot;, iterations);</code>
+<CODE CLASS="Code">      }</code>
+<CODE CLASS="Code">   }</code>
+<CODE CLASS="Code">}</code>
+<CODE CLASS="Code">&nbsp;</code>
+<CODE CLASS="Code"><EM CLASS="LineAnnotation">Output:</em></code>
+<CODE CLASS="Code">Sum of (2000) = 2001000</code>
+<CODE CLASS="Code">Looping. Elapsed milliseconds: </code>
+<CODE CLASS="Code">11468.75 for 1000000 iterations</code>
+<CODE CLASS="Code">Sum of (2000) = 2001000</code>
+<CODE CLASS="Code">Brute Force. Elapsed milliseconds: </code>
+<CODE CLASS="Code">406.25 for 1000000 iterations</code>
+</pre>
+
+<P CLASS="Body">Reflection emit is a powerful technique for emitting op codes. Although today's compilers are very fast and today's machines have lots of memory and processing speed, it is comforting to know that when you must, you can get right down to the virtual metal.</p>
+
+
+
+</blockquote>
+
+
+<!-- End of sample chapter -->
+<p><b>Back to: <a href="/catalog/progcsharp/">Programming C#</a></b></p>
+
+<!-- O'Reilly Footer Begins Here -->
+
+<center>
+<hr size="1" noshade="noshade" />
+<font size="1" face="Verdana, Arial, Helvetica">
+<a href="http://www.oreilly.com/">
+<b>oreilly.com&nbsp;Home</b></a> <b> | </b>
+<a href="http://www.oreilly.com/sales/bookstores">
+<b>O'Reilly&nbsp;Bookstores</b></a> <b> | </b>
+<a href="http://www.oreilly.com/order_new/">
+<b>How&nbsp;to&nbsp;Order</b></a> <b> | </b>
+<a href="http://www.oreilly.com/oreilly/contact.html">
+<b>O'Reilly&nbsp;Contacts<br /></b></a>
+<a href="http://www.oreilly.com/international/">
+<b>International</b></a> <b> | </b>
+<a href="http://www.oreilly.com/oreilly/about.html">
+<b>About&nbsp;O'Reilly</b></a> <b> | </b>
+<a href="http://www.oreilly.com/affiliates.html">
+<b>Affiliated&nbsp;Companies</b></a> <b> | </b>
+<a href="http://www.oreilly.com/privacy_policy.html">
+<b>Privacy&nbsp;Policy</b></a><p>
+<em>&copy; 2001, O'Reilly &amp; Associates, Inc.</em><br />
+<a href="mailto:webmaster@oreilly.com"><i>webmaster@oreilly.com</i></a></p>
+</font>
+</center>
+
+<!-- O'Reilly Footer Ends Here -->
+
+</body>
+</html>

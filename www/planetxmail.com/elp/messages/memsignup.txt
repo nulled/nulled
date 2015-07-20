@@ -1,0 +1,9 @@
+Hello [fname],
+
+Use the link below to validate your email address.
+
+Validate Contact Email URL:
+http://www.planetxmail.com/elp/validateemail.php[mem_signup_params]
+
+Ezy-List will save you loads of time and money. You will now be able to submit your AD to any number of Safe-Lists, EFFORT FREE!
+All in just ONE MOUSE CLICK!

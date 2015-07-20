@@ -1,0 +1,23 @@
+Hello [fname],
+
+Use the link below to validate your email address. You CAN NOT log into your account until your email address has been validated.
+
+Step 1:
+Validate Contact Email URL:
+http://www.planetxmail.com/elp/validateaffemail.php[mem_signup_params]
+
+After you validate your email address you will be able to log into to your Affiliate control panel and start using your affiliate account
+to start promoting!  Also, if you do not validate and verify your contact email address you will not get credit for those that try to sign
+up under your affliate name!
+
+Step 2:
+Affiliate Login Control Panel:
+http://www.planetxmail.com/elp/admin/afflogin.php[mem_signup_params]
+
+Step 3:
+Distribute this Link when selling Ezy-List Pro Memberships:
+http://www.planetxmail.com/elp/signup.php[aff_signup_params]
+
+______________________________________________________________
+Ezy-List Pro will save you loads of time and money. You will now be able to submit your AD to any number of Safe-Lists, EFFORT FREE!
+All in just ONE MOUSE CLICK!

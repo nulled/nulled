@@ -1,0 +1,22 @@
+
+table {font-family: verdana, arial, helvetica, sans-serif; font-size: 12px;}
+body {font-family: verdana, arial, helvetica, sans-serif; font-size: 12px; background-color:#ffffff;
+scrollbar-base-color: #CD9373; scrollbar-arrow-color: #370606; scrollbar-DarkShadow-Color: #776969}
+td {font-family: verdana, arial, helvetica, sans-serif; font-size: 12px;}
+font {font-family:verdana, arial, helvetica, sans-serif; font-size: 12px}
+h1 {font-family:verdana, arial, helvetica, sans-serif; font-size: 13px}
+h2 {font-family:verdana, arial, helvetica, sans-serif; font-size: 15px}
+h3 {font-family:verdana, arial, helvetica, sans-serif; font-size: 18px}
+pre {font-size: 12px;}
+
+select { color:#000000; font: 10px Verdana, Arial, Helvetica, sans-serif; font-weight: none;
+text-decoration: none; background: #FFFFFF; border: 1px solid #999999}
+
+option {color:#000000; font: 10px Verdana, Arial, Helvetica, sans-serif; font-weight: none;
+text-decoration: none; background: #FFFFFF; border: 1px solid #999999}
+
+textarea {color:#000000; font: 10px Verdana, Arial, Helvetica, sans-serif; font-weight: none;
+text-decoration: none; background: #FFFFFF; border: 1px solid #999999}
+
+input {color:#000000; font: 11px Verdana, Arial, Helvetica, sans-serif; font-weight: none;
+text-decoration: none; background: beige; border: 1px solid #999999}

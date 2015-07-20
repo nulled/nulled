@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /root/cloud9
+node ./bin/cloud9.js -c ./config.js

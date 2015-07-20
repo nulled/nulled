@@ -1,0 +1,2 @@
+#!/bin/bash
+multitail /tmpfs/procbounce_log /tmpfs/planetxmail.com_log /tmpfs/freeadplanet.com_log /tmpfs/sendqueue_log /tmpfs/sendsoload_log /var/log/auth.log

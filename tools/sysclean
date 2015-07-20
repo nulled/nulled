@@ -1,0 +1,12 @@
+#!/bin/bash
+
+rm -f /home/nulled/mailstorage/planetxmail.com/accounts/Maildir/new/*
+rm -f /home/nulled/mailstorage/planetxmail.com/root/Maildir/new/*
+
+FILENAME=/var/log/mail.log
+FILESIZE=$(stat -c%s "$FILENAME")
+
+if [[ $FILESIZE > 50000000 ]]
+then
+#  rm -f /var/log/mail.log && service rsyslog restart  
+fi

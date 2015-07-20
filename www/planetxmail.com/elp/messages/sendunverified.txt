@@ -1,0 +1,21 @@
+[fname],
+
+You signed up to get an Ezy-List Pro account. But, you did not activate your account.
+
+Pay for the Sign up fee:
+[signup_paylink_url]
+
+Your ELP Owner contact email is:
+[owner_email]
+
+To login, start the Ezy-List program, goto Activate!->Activate ELP and enter the information below:
+
+User:  [user_name]
+Pass:  What you set it as.
+Owner: [owner_name]
+
+___________________________________________________________
+If you DO NOT wish to sign up, delete this notice.
+This reminder generated automatically for 7 days or until you activate your account.
+
+ELP System owner contact: accounts@planetxmail.com

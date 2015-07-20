@@ -1,0 +1,5 @@
+<p>
+	<font size="+1" color="red"><b>[fname]</b>,<br>
+	You are currently paid and up to date!  You do not need to worry about your monthly
+	payment until we bill you by email.</font>
+</p>

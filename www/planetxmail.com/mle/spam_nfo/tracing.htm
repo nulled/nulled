@@ -1,0 +1,76 @@
+<HTML><HEAD><TITLE>Tracing Email</TITLE>
+<link rel="stylesheet" type="text/css" href="css_mlp.css" />
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY vLink=#996600 aLink=#990000 link=#000000 bgColor=#ffffff>
+<TABLE cellSpacing=5 cellPadding=5 align=left border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#c0c0c0><U>Contents:</U><BR><SMALL><A
+      href="index.htm"><FONT
+      color=maroon>Spam</FONT></A><BR>· <A
+      href="headers.htm">Deciphering
+      Headers</A><BR>· <A
+      href="tracing.htm">Tracing
+      Email</A><BR>· <A
+      href="complaints.htm">Filing
+      Complaints</A><BR>· <A
+      href="preventing.htm">Preventing
+      Spam</A><BR>· <A
+      href="filters.htm">Spam
+      Filters</A><BR>·</SMALL></TR></TBODY></TABLE>
+<BLOCKQUOTE>
+<table width="500">
+  <tr>
+    <td>
+  <H3>Tracing Email</H3>Once you know the <A
+  href="headers.htm">domain
+  names and IP addresses</A>, you can begin tracing the message's origin. The
+  goal is to verify that the domain names are correct, according to the given
+  addresses. Domain Name Systems (DNS) servers let you enter look up information
+  on specific IP addresses. You can compare this information with the
+  information in your email header to find the origin of a message. People may
+  change the domain name in the email header, but the address is always correct.
+  <B>To look up the information on an IP address do the following:</B><BR>
+  <OL>
+    <LI>Go to the <A
+    href="http://www.weir.net/WeirNet/support/faq/antispam/traceroute.html" target="_blank">traceroute
+    tools</A>.
+    <LI>Enter the IP address in the search box and click <B>search</B>.
+    <LI>Compare the name of the domain (computer) with each IP address in your
+    email. </LI></OL>
+  <DIV align=center>
+  <TABLE borderColor=#0000ff cellSpacing=3 cellPadding=3 width=394 border=1>
+    <TBODY>
+    <TR>
+      <TD align=middle width=191><B>Machine Name </B>
+      <TD align=middle width=190><B>IP Address </B>
+      <TD align=middle width=58><B>Match? </B>
+    <TR>
+      <TD align=middle width=191>mail.compuserve.com
+      <TD align=middle width=190>205.5.81.86
+      <TD align=middle width=58><FONT color=#ff0080><B>No </B></FONT>
+    <TR>
+      <TD align=middle width=191>hd58-032.hil.compuserve.com
+      <TD align=middle width=190>199.174.238.32
+      <TD align=middle width=58><FONT color=#ff0080>Yes </FONT>
+    <TR>
+      <TD align=middle width=191 height=20>pacific.net.sg
+      <TD align=middle width=190 height=20>203.120.90.85
+      <TD align=middle width=58 height=20><FONT color=#ff0080>Yes </FONT>
+    <TR>
+      <TD align=middle width=191>pacific.net.sg
+      <TD align=middle width=190>203.120.90.72
+      <TD align=middle width=58><FONT color=#ff0080>Yes
+  </FONT></TR></TBODY></TABLE></DIV>
+  <P>In this example, the first server and IP address do not match. The IP
+  address was 'invented' by someone to keep others from finding out who sent the
+  message. However, the next address is correct, and was probably the sender's
+  own address. The 'hd58-032' on a compuserve address is common for a dial-up
+  account, rather than a specific machine on a network.
+  <P>The next machine, <b>pacific.net.sg</b>., is
+  a remote post office (a remailer). The spammer sent the spam through a remote
+  post office server, which sent it to the receiver. The spammer also tried to
+  cover the tracks by adding a fake entry to the mail header.
+  <P>Now you know who to contact so action can be taken against the spammer. In
+  this case, it would be CompuServe. </P></BLOCKQUOTE></td></tr></table></BODY></HTML>

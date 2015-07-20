@@ -1,0 +1,125 @@
+Hello [name],
+
+We have received your order. Thank you.
+
+-----------------------------------------------------
+Order Date: [date]
+
+Pay Processor: [mop]
+Receipt ID: [receipt_id]
+
+Format Type: [content_format]
+AD Type: [soload_type]
+
+Credit URL: [credit_url]
+
+STATUS of your SOLO AD:
+[sastatus_link]
+
+Support / Refunds:
+http://planetxmail.com/openticket.php
+-----------------------------------------------------
+
+Your SOLO AD will be mailed to our Safelist network, usually
+with in one (1) hour or less. You can check the mailing status
+by using the link provided above. It takes approximately 20-30
+minutes to mail one SOLO AD. If there are other Solo ADs to be
+mailed, than naturally it may take longer than 20-30 minutes.
+We mail Solo ADs in the order in which we receive them.
+
+Note: We only send one Contact SOLO AD per unique email,
+even though you may have a dozen or more SafeList accounts
+with the same Contact Address. Customers have complained
+that receiving the same AD many times to the same address
+was an annoyance.
+
+SOLO ADs are delivered to ALL our SafeLists, regardless if you
+have any SafeList accounts yourself. It is ALSO mailed to all
+targetedadplanet.com members.
+
+SOLO ADs earn 5 times more Credits than regular member Credit
+URLs! This makes your SOLO AD valuable to your readers.
+
+-----------------------------------------------------
+
+In order to measure the effectiveness of your SOLO AD,
+(or any advertising campaign) you need ways to track and
+record how many visitors/hits you get. There are many ways
+to record web traffic. All of our recommendations listed
+below are FREE solutions.
+
+1) http://www.google.com/analytics
+
+  Google provides their service 100% free to all.
+  You need to create an account, paste some javascript
+  code into the pages you want to track and google does
+  the rest. They render wonderful, flash based charts and
+  graphs, that provide you with all the metrics possible.
+  Including; country, state and city visitors came from!
+
+2) http://www.easycounter.com/FreeCounter3.html
+
+  A simpler method is to place a counter on all Web Pages you
+  want to count. There are literally thousands of Web sites
+  offering Web Counters. We provide easycounter.com as just one
+  possibility. Do a web search on google.com for Free Web
+  Counters. That way you can shop for what best suits your needs.
+
+3) http://planetxmail.com URL Trackers
+
+  Method #1 and #2 does require access to the HTML and some work.
+  If you do not have access to the Web Page HTML you are promoting/
+  Advertising, such as affiliate pages, you will need to
+  use URL Tracking. A URL Tracker simply replaces the Link/URL
+  you wish to track/count with one that is provided by the URL
+  Tracking service. You simply register the URL you wish to track
+  and a unique URL is issued to you. Planetxmail.com offers
+  Free URL Tracking. You simply need a Safelist Account with any
+  planetxmail.com safelist. Just like Free Web Page Counters, URL
+  Tracking has just as many solutions. Do a web search using
+  google.com with the key words, Free URL Trackers.
+
+Some SOLO AD customers report they did not see their SOLO AD in
+their INBOX. We tell our customers that this is ONE way to check
+that your SOLO AD was mailed out. However, there are many factors
+that may cause you to miss, not see or receive it. We certainly
+encourage you to use one or all the Tracking methods(1-3), instead
+of simply looking for your SOLO AD in your INBOX! After all,
+traffic/visitors is what you need, not a single email AD to your
+INBOX as proof of the pudding!
+
+Bounced emails are an issue all mailing services must deal with.
+This means there are occasions when you may not see your SOLO AD,
+but that does NOT mean that the 120,000+ other members bounced
+as well!
+
+Read below for a detailed explaination about how we deal with
+bouncing and problematic Mail Servers on the Internet.
+
+1) You must have a confirmed contact address to receive your AD.
+2) Your account must not be on vacation mode.
+3) Your mailbox must not be Full at the time of mailing.
+
+We have highly tuned and sophisticated software that records and
+deals with the bounce back issues that all mailing services must
+deal with. Your Contact address, if bounced, will be added to our
+Bounced Database, and therefore, will not be mailed to. We RESET
+our Bounced Database after a designated amount of time, at which time
+we try to mail to that email address again. If no bounces occur
+then delivery should be expected. There are times when an ISPs mail
+servers are overloaded and bounce emails a lot, while other times the
+mail load is low and no bouncing occurs, for instance, at 3am in the
+morning.
+
+----------------------------------------------------
+Bonus: You can now transfer your PXM Credits over to
+Free AD Planet (targetedadplanet.com) and use them there.
+----------------------------------------------------
+
+To view your SOLO AD and status information:
+[sastatus_link]
+
+Thank You,
+Matt - Customer Service
+http://planetxmail.com
+

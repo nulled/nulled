@@ -1,0 +1,39 @@
+Thank you, [name], for your order with Planet X Mail.
+
+ADMIN CONTROL area is accessed from:
+http://www.planetxmail.com/mle/admin/indexlistowner.php
+
+user: [listownername]
+pass: 111111
+
+Will be prompted to change the password.  Write it down some where safe!
+
+Welcome Aboard,
+Matt K ( Owner )
+accounts@planetxmail.com
+http://www.planetxmail.com
+http://www.planetxmailbox.com
+________________________________________
+
+Name: [name]
+Organization: [organization]
+Email: [email]
+
+List Name: [listname]
+List Type: [listtype]
+List Size: [nummembers]
+
+Import List: [importlist]
+
+List Owner Name: [listownername]
+List Owner Email: [listowneremail]
+
+Price: $ [price]
+Order ID: [id]
+
+Date: [orderdate]
+
+Read the List Owner Guide:
+http://www.planetxmail.com/mle/manuals/index.php
+
+Your SafeList will need Sales pages and its own Domain.  Planet X Mail does not hosts webpages but we HIGHLY recommend you check out http://www.hosts4.com  They are 99.9% uptime and have the best Control Panels around.  Live demo at their site as well!

@@ -1,0 +1,9 @@
+Thank you for signing up with us! To confirm your sign-up request,
+please either click on the link below or cut n paste the link to your browser.
+
+List called:  [list_name]
+
+[activation_link]
+
+Once again thank you for signing up.
+

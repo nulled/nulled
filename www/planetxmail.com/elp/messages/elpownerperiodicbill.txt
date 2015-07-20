@@ -1,0 +1,74 @@
+Here is your Bill Ending: [ending_date].
+Owed to Elite Scripts for your Ezy-List Pro
+Partnership. (ELP) Partners
+
+Detailed transactions at bottom of email. You can verify
+this bill within the ELP Partner Admin Control Panel as
+well as receipt notifications you received from your
+merchant vendor.
+
+¤§¤==========¤§¤==========¤§¤¤§¤=========¤§¤==========¤§¤
+         We offer payment by E-gold and Paypal.
+
+Pay this bill using the link below.
+[monthly_payment_url]
+¤§¤==========¤§¤==========¤§¤¤§¤=========¤§¤==========¤§¤
+
+
+
+Billing Period Ending: [ending_date]
+
+Total Amount Earned:   $ [total_earned]
+Total Amount Owed:   - $ [total_owed] <-- This Period Owed
+                         --------
+Your Total Profits:  = $ [total_profits] USD
+
+Total Signups:  [total_signups]
+Total Monthlys: [total_monthlys]
+
+
+
+Below are your stats starting from the day you signed up:
+=========================================================
+Date you signed up: [date_elpowner_signed_up]
+
+Absolute Amount Earned:   $ [absolute_earned]
+Absolute Amount Owed:   - $ [absolute_owed] <-- Paid us so far
+                         --------
+Your Absolute Profits:  = $ [absolute_profits] USD
+
+Absolute Signups:  [absolute_signups]
+Absolute Monthlys: [absolute_monthlys]
+
+
+
+¤§¤========¤§¤========¤§¤¤§¤========¤§¤========¤§¤¤§¤========¤§
+Matt Kukowski ( Owner / Creator )
+Contact email: accounts@planetxmail.com
+
+http://www.planetxmail.com
+http://www.planetxmailbox.com
+
+
+
+    ---==== Your Unpaid to Elite Scripts Member PAID Transactions ====---
+ID,     Username,           Transtype, Earned, Receipt,          M.O.P.    Owed
+-------------------------------------------------------------------------------
+[trans_data]
+
+
+
+How charges were calculated:
+---------------------------
+SIGN-UPS
+For each sign-up you get you charge $ [price] for setup fee
+plus the $ [monthly_price] for 1st months access.
+We take $ [commission] per setup fee plus $ [monthly_commission]
+for 1st months access for using our programs, systems and servers.
+
+MONTHLY RENEWALS
+For each monthly renewal you get you charge $ [monthly_price].
+We take $ [monthly_commission] per renewal.
+
+These Periodic Billings are then calculated on the 1st and 15th
+of every month.

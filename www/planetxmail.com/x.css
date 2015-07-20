@@ -1,0 +1,130 @@
+* {
+  font-size: 12px;
+  font-family: verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+body {
+  margin: 50px 0;
+  background-color: #FFFFFF;
+  font-family: verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+table {
+  color: #2a2a2a;
+  font-size: 12px;
+  font-family: verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+a {
+  font-size: 12px;
+  color: black;
+  text-decoration: underline;
+}
+
+a:after {
+  font-size: 12px;
+  color: black;
+  text-decoration: underline;
+}
+
+a:hover {
+  font-size: 12px;
+  color: red;
+  text-decoration: underline;
+}
+
+select {
+  color: #2a2a2a;
+  font-size: 12px;
+}
+
+input,
+textarea {
+  color: #000000;
+  font-size: 12px;
+  padding: 5px;
+  text-decoration: none;
+  background-color: white;
+  background-image: url(http://planetxmail.com/images/input.jpg);
+  background-repeat: repeat-y;
+  border: 1px solid #778899;
+  resize: none;
+}
+
+pre {
+  font-size: 12px;
+}
+
+h1 {
+  font-size: 11px;
+}
+
+h2 {
+  font-size: 13px;
+}
+
+h3 {
+  font-size: 15px;
+}
+
+.red {
+  color: red;
+}
+
+.redlarge {
+  font-size: 17px;
+  color: #ff0000;
+}
+
+.tdbgcolor1 {
+  background-color: #F5F5F5;
+}
+
+.tdbgcolor2 {
+  background-color: #FBFDFD;
+}
+
+.submitblack {
+  font-size: 12px;
+  background: #666666;
+  color: #ffffff;
+  cursor: auto;
+}
+
+.blue {
+  font-size: 12px;
+  color:#000066;
+  background-color:#D6E7EF;
+}
+
+.redbutton {
+  font-size: 12px;
+  background-color: #FA7C7C;
+  color: #000000;
+  border-style:solid;
+  cursor: auto;
+}
+
+.greenbutton {
+  font-size: 12px;
+  background-color: #99CC99;
+  color: #000000;
+  border-style: solid;
+  cursor: auto;
+}
+
+.beigebutton {
+  font-size: 12px;
+  background-color: #FFFFCC;
+  color: #000000;
+  border-style:solid;
+  cursor: auto;
+}
+
+.bluebutton {
+  font-size: 12px;
+  background-color: #000066;
+  color: #000000;
+  border-style:solid;
+  cursor: auto;
+}

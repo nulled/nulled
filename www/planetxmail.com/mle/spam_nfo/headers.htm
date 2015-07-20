@@ -1,0 +1,90 @@
+<HTML><HEAD><TITLE>Deciphering Email Headers</TITLE>
+<link rel="stylesheet" type="text/css" href="css_mlp.css" />
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY vLink=#996600 aLink=#990000 link=#000000 bgColor=#ffffff>
+<TABLE cellSpacing=5 cellPadding=5 align=left border=1>
+  <TBODY>
+  <TR>
+    <TD bgColor=#c0c0c0><U>Contents:</U><BR><SMALL><A
+      href="index.htm"><FONT
+      color=maroon>Spam</FONT></A><BR>· <A
+      href="headers.htm">Deciphering
+      Headers</A><BR>· <A
+      href="tracing.htm">Tracing
+      Email</A><BR>· <A
+      href="complaints.htm">Filing
+      Complaints</A><BR>· <A
+      href="preventing.htm">Preventing
+      Spam</A><BR>· <A
+      href="filters.htm">Spam
+      Filters</A><BR>·</SMALL></TR></TBODY></TABLE>
+<BLOCKQUOTE>
+<table width="500">
+  <tr>
+    <td>
+  <H3>Deciphering Email Headers </H3><B>Why look at email headers?</B><BR>If you
+  want to write to the domain administrators where the spam originated, you need
+  to understand email headers. You cannot just 'Reply' to the message to give
+  the spammer a piece of your mind, because it is very easy to fake an email
+  address. <B>Searching through headers</B><BR>Here is a sample email header
+  (colors added). The final receiver's address is 'you@your.domain.com'.
+  <BLOCKQUOTE><FINR face="Times New Roman"><FONT
+    color=#800000><B>Received:</B></FONT> (2228 bytes) by
+    <B>&lt;</B>your.domain.com<B>&gt;</B> via sendmail with
+    P:stdio/D:user/T:local <B><FONT color=#800080>(sender:
+    &lt;29086328@compuserve.com&gt;)</FONT><FONT color=#ff8000> </FONT></B><FONT
+    color=#000000>id m0xUFxr-001cL6C@your.domain.dom for
+    <EM>you@your.domain.com</EM>; Sat, 8 Nov 1997 10:50:35 -0800 (PST)</FONT>
+    (Smail-3.2.0.98 1997-Oct-16 #12 built 1997-Oct-28) <FONT
+    color=#ff0080><B>Received</B><B>: from</B></FONT> simon.pacific.net.sg
+    (<FONT color=#0000ff><B>simon.pacific.net.sg [203.120.90.72]</B></FONT>) by
+    your.domain.com (8.8.7/8.7.3) with ESMTP id KAA01565; Sat, 8 Nov 1997
+    10:43:34 -0800 (PST)</FONT><FONT face="Times New Roman" color=#996633>
+    </FONT><FONT face="Times New Roman"><FONT color=#800080><B>From:
+    29086328@compuserve.com </B></FONT><FONT color=#ff0080><B>Received:
+    from</B></FONT> pop1.pacific.net.sg (<FONT
+    color=#0000ff><B>pop1.pacific.net.sg [203.120.90.85]</B></FONT>) by
+    simon.pacific.net.sg with ESMTP id CAA25373; Sun, 9 Nov 1997 02:44:51 +0800
+    (SGT) <FONT color=#ff0080><B>Received</B><B>: from</B></FONT>
+    po.pacific.net.sg (<FONT color=#0000ff><B>hd58-032.hil.compuserve.com
+    [199.174.238.32]</B></FONT>) by pop1.pacific.net.sg with SMTP id CAA12179;
+    Sun, 9 Nov 1997 02:43:10 +0800 (SGT) <FONT color=#ff0080><B>Received:
+    from</B></FONT> <FONT color=#000000>mail.compuserve.com (</FONT><B><FONT
+    color=#0000ff>mail.compuserve.com (205.5.81.86)</FONT></B><FONT
+    color=#000000>) by compuserve.com (8.8.5/8.6.5)</FONT> with SMTP id GAA04211
+    for &lt;87789123456@aol.com&gt;</FONT> </BLOCKQUOTE>It may look confusing, but
+  there are some patterns that tell you everything you need to know. The header
+  can be broken into several sections, each beginning with the word "Received".
+  <P>The first <B>'<FONT color=#800000>Received</FONT>'</B> is from your email
+  server. This section lists the <B><FONT color=#800080>supposed sender,
+  </FONT></B><FONT color=#000000>the message ID number, and when the message
+  came in</FONT>. The other <B>'<FONT color=#ff0080>Received: from</FONT>'</B>
+  tags are from remailers that the spammer used to make it more difficult to
+  track him/her down.
+  <OL>
+    <LI>Find the last '<FONT color=#ff0080><B>Received: from</B></FONT>' entry
+    in the header. This usually shows the originating server.
+    <LI>Find and write down the <FONT color=#0000ff><B>server domain and its IP
+    address</B></FONT>. This information appears in parenthesis in each '<FONT
+    color=#ff0080><B>Received: from</B></FONT>' entry. </LI></OL>
+  <DIV align=center>
+  <TABLE borderColor=#0000ff cellSpacing=3 cellPadding=3 width=330 border=1>
+    <TBODY>
+    <TR>
+      <TD align=middle width=197><B>Machine Name </B>
+      <TD align=middle width=113><B>IP Address </B>
+    <TR>
+      <TD align=middle width=197>mail.compuserve.com
+      <TD align=middle width=113>205.5.81.86
+    <TR>
+      <TD align=middle width=197><FONT
+        color=#000000>hd58-032.</FONT>hil.compuserve.com
+      <TD align=middle width=113>199.174.238.32
+    <TR>
+      <TD align=middle width=197>popl.pacific.net.sg
+      <TD align=middle width=113>203.120.90.85
+    <TR>
+      <TD align=middle width=197>simon.pacific.net.sg
+      <TD align=middle width=113>203.120.90.72
+</TR></TBODY></TABLE></DIV></BLOCKQUOTE></td></tr></table></BODY></HTML>

@@ -1,0 +1,12 @@
+<b><font color=#005F8C size=+1>Some Executive membership benefits</font></b>
+<br><br>
+<ul>
+  <li type=square>
+    You can track up to [num_urltrackers_exe] ads at the same time with our powerful in-built AD tracking system.
+  </li>
+  <li type=square>
+    Send mail 7 times per week, once per day.
+  </li>
+    <br><br>
+    <b>Our Executive membership is a great value at only $[cost_of_exe]</b>
+</ul>

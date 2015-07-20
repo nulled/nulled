@@ -1,0 +1,9 @@
+<a href="http://[click_bank_link_number].[click_bank_user_name].pay.clickbank.net?vtid=[click_bank_params]"><h3>Order using Clickbank/Paypal</h3></a>
+<a href="http://[click_bank_link_number].[click_bank_user_name].pay.clickbank.net?vtid=[click_bank_params]"><img src="http://planetxmail.com/mle/images/clickbank.gif" border="0"></a>
+
+<b>All major Credit Cards Accepted</b>
+<p>
+  <font color="red"><b>IMPORTANT!!!</b></font>  For those ordering using Clickbank be <i>SURE</i> to click
+  continue until you get to <b>OUR</b> Thank you page. You will see OUR title graphic at the top.
+  If you fail to do this your	account will <b>NOT</b> be credited!
+</p>

@@ -1,0 +1,25 @@
+Hello [list_name] Listowner,
+
+The members listed below where removed from [list_name]
+Safelist, after [months_inactive] MONTHS of No Activity.
+
+--> They did not Login or Click any Credit URLs in Emails.
+
+To turn off or Adjust your Auto-Clean feature, simply
+log into Your Planet X Mail List Administrator Control
+Panel and navigate to the List Wizard.
+
+However, it is Highly Recommended that you have it set at
+3 to 12 months of inactivity.  The system automatically
+reminds each of Your Members after 30 Days to Login or
+Click some Credit URLs to show they still care.
+
+Log In to your List Owner Control Panel below:
+http://planetxmail.com/mle/admin/index.php
+
+Listowner Username: [listowner_username]
+Listowner Password: ********
+
+Thank You,
+Matt - Planet X Mail Administrator
+http://planetxmail.com/openticket.php

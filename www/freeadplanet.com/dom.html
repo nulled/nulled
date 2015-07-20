@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Standard DOM Tests</title>
+<script type="text/javascript" src="jsm_dev.js"></script>
+<style>
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  /* for centering div tags without the use of <center> for IE
+   for non-IE margin: 0 auto; works when applied to <div> */
+	/* text-align: center;  for IE */
+}
+#myDiv1 {
+  border: 1px solid black;
+  width: 10%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+}
+#myDiv2 {
+  border: 1px solid black;
+  width: 10%;
+  position: absolute;
+  left: 500px;
+  top: 50px;
+  z-index: 2;
+}
+#tooltip_item1 {
+  border: 1px solid black;
+  width: 10%;
+  display: block;
+  position: absolute;
+  left: 0px;
+  top: 150px;
+}
+#tooltip1 {
+  border: 1px solid black;
+  width: 10%;
+  display: none;
+}
+#tooltip_item2 {
+  border: 1px solid black;
+  width: 10%;
+  display: block;
+  position: absolute;
+  left: 140px;
+  top: 150px;
+}
+#tooltip2 {
+  border: 1px solid black;
+  width: 10%;
+  display: none;
+}
+#debug {
+  border: 1px solid black;
+  width: auto;
+  display: block;
+  position: absolute;
+  left: 300px;
+  top: 150px;
+}
+/*
+#tab1 {
+  top: 200px;
+  left: 0px;
+}
+#tab2 {
+  top: 200px;
+  left: 100px;
+}
+#tab3 {
+  top: 200px;
+  left: 200px;
+}
+*/
+.container {
+  border: 1px solid black;
+  margin: 0 auto;     /* align for good browsers (non IE) */
+  text-align: center; /* counter the body center */
+  width: 300px;
+}
+.menutab {
+  border: 1px solid black;
+}
+.menuContent {
+  position: absolute;
+  /* display: none; */
+  border: 1px solid black;
+}
+.links {
+  background-color: lightblue;
+}
+.links a {
+  font-size: 20px;
+  text-decoration: none;
+}
+.links a:hover {
+  text-decoration: none;
+}
+</style>
+<script>
+jsm.handler.add(window, 'load', function() {
+
+  jsm.DEBUG = 1;
+
+  // clear debug window
+  var d = document.getElementById('debug');
+  if (d) {
+    d.onmouseout = function(ev) {
+      d.innerHTML = 'DEBUG<hr />';
+    }
+  }
+
+  var myDiv1 = document.getElementById('myDiv1');
+  var myDiv2 = document.getElementById('myDiv2');
+
+  jsm.dnd.makeDraggable(myDiv1);
+  jsm.dnd.makeDraggable(myDiv2);
+
+  myDiv1.onmouseover = function() {
+    myDiv1.style.backgroundColor = 'beige';
+  }
+
+  myDiv1.onmouseout = function() {
+    myDiv1.style.backgroundColor = 'white';
+  }
+
+  // example ajax
+  myDiv2.onclick = function() {
+    jsm.ajax.get("http://freeadplanet.com", ajaxHandler);
+  }
+
+  myDiv2.onmouseout = function() {
+    myDiv2.style.backgroundColor = 'white';
+  }
+
+  var tab1 = document.getElementById('tab1');
+  var tab2 = document.getElementById('tab2');
+  var tab3 = document.getElementById('tab3');
+  // works but only if position is absolute to document
+  // need to work out how to move relative items
+  // and items that are centered with alignment and css
+  //jsm.dnd.makeDraggable(tab1);
+  //jsm.dnd.makeDraggable(tab2);
+  //jsm.dnd.makeDraggable(tab3);
+
+  //jsm.dnd.makeDraggable(document.getElementById('container'));
+
+  jsm.menu.setTab(tab1, document.getElementById('tab1_list'), new Array('white','pink','lightblue','beige'), 1);
+  jsm.menu.setTab(tab2, document.getElementById('tab2_list'), new Array('white','pink','lightblue','beige'));
+  jsm.menu.setTab(tab3, document.getElementById('tab3_list'), new Array('white','pink','lightblue','beige'));
+
+  var tooltip_item1 = document.getElementById('tooltip_item1');
+  var tooltip1 = document.getElementById('tooltip1');
+
+  jsm.tooltip.create(tooltip_item1, tooltip1);
+
+  var tooltip_item2 = document.getElementById('tooltip_item2');
+  var tooltip2 = document.getElementById('tooltip2');
+
+  jsm.tooltip.create(tooltip_item2, tooltip2);
+  jsm.dnd.makeDraggable(tooltip_item2);
+});
+
+document.onmousemove = function(e) {
+  // additional example dnd mouse move functions shown below...
+  var mousePos = jsm.dnd.getMouseCoords(e); // careful this will be called twice if something is being dragged
+  document.Show.MouseX.value = mousePos.x;
+  document.Show.MouseY.value = mousePos.y;
+}
+
+// used to test e.stopPropagation() works
+document.onmouseover = function(e) {
+  //alert(e.type + "\n" + e.target);
+}
+
+function ajaxHandler()
+{
+  // readyState == 3 works in FF but not IE so dont use it... :(
+  if (jsm.ajax.connection.readyState == 4 && jsm.ajax.connection.status == 200) {
+    document.getElementById('myDiv2').innerHTML = jsm.ajax.connection.responseText;
+  }
+}
+
+</script>
+</head>
+<body>
+
+<div id="debug">
+  DEBUG<hr />
+</div>
+
+<div id="tooltip1">
+  Here is the Tooltip text. 1
+</div>
+
+<p id="tooltip_item1">
+  Some text to active tooltip. Mouse over to see! 1
+</p>
+
+<div id="tooltip2">
+  Here is the Tooltip text. 2
+</div>
+
+<p id="tooltip_item2">
+  Some text to active tooltip. Mouse over to see! 2
+</p>
+
+<div id="myDiv1">
+  <form name="Show">
+    X <input type="text" name="MouseX" value="0" size="4"><br>
+    Y <input type="text" name="MouseY" value="0" size="4"><br>
+  </form>
+</div>
+
+<div id="myDiv2">
+  AJAXIFY ME
+</div>
+
+<div id="container" class="container">
+<span id="tab1" class="menutab"><a href="#">URL 1</a></span>
+<span id="tab2" class="menutab"><a href="#">URL 2</a></span>
+<span id="tab3" class="menutab"><a href="#">URL 3</a></span>
+</div>
+<div id="tab1_list" class="menuContent">
+  <div class="links"><a href="#">Home1</a></div>
+  <div class="links"><a href="#">About1</a></div>
+  <div class="links"><a href="#">Join1</a></div>
+  <div class="links"><a href="#">Contact1</a></div>
+</div>
+<div id="tab2_list" class="menuContent">
+  <div class="links"><a href="#">Home2</a></div>
+  <div class="links"><a href="#">About2</a></div>
+  <div class="links"><a href="#">Join2</a></div>
+  <div class="links"><a href="#">Contact2</a></div>
+</div>
+<div id="tab3_list" class="menuContent">
+  <div class="links"><a href="#">Home3</a></div>
+  <div class="links"><a href="#">About3</a></div>
+  <div class="links"><a href="#">Join3</a></div>
+  <div class="links"><a href="#">Contact3</a></div>
+</div>
+
+</body>
+</html>

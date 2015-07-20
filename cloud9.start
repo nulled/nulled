@@ -1,0 +1,3 @@
+#!/bin/bash
+#cd /root/cloud9 && nohup bin/cloud9.sh -l 0.0.0.0 -p 3131 -w /home/nulled --username nulled --password ntws4074 &
+cd /root/cloud9 && nohup bin/cloud9.sh -l localhost -p 3131 -w /home/nulled &

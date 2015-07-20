@@ -1,0 +1,7 @@
+Hello [user_name]! You decided to unsubscribe from [list_name].
+
+If you didnt unsubscribe and you suspect wrong doing.
+Contact support with the email: [admin_email_address]
+
+Thank you for doing business with us.
+

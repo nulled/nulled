@@ -1,0 +1,69 @@
+<style type="text/css">
+<!--
+body{
+scrollbar-face-color:#7F98C1;
+scrollbar-arrow-color:black;
+scrollbar-track-color:#27487E;
+scrollbar-shadow-color:'';
+scrollbar-highlight-color:'';
+scrollbar-3dlight-color:'';
+scrollbar-darkshadow-Color:'';
+}
+
+input
+{
+	font-family:Verdana;
+	font-size:9pt;
+	color:black;
+	background-color:white;
+	border:black;
+	border-style:groove;
+	border-top-width:1px;
+	border-bottom-width:1px;
+	border-right-width:1px;
+	border-left-width:1px;
+}
+
+textarea
+{
+	font-family:Verdana;
+	font-size:9pt;
+}
+
+body
+{
+background-color: #FFFFFF;
+}
+
+table
+{
+font-family: Verdana; font-size: 10px;
+}
+
+font.highlight {background: #ffff00; color: #000000;}
+font.highlight_lightblue {background: lightblue; color: #000000;}
+
+font.medsize {font-size: 14px;}
+
+ul.spaced li {margin-bottom: 2em;}
+
+.textfield {background: #000000; color: #FFFFFF; font-family: Verdana; font-size: 15px font-style: bold;}
+.submitblack {font-family: Verdana; font-size: 11px; font-weight: bold; background: #666666; color: white; cursor: hand;}
+
+A:link { text-decoration:underlined; color:blue; }
+A:active { text-decoration:underlined; color:blue; }
+A:visited { text-decoration:underlined;  color:blue; }
+
+A:hover { background-color: #274271; text-decoration:none; color:white;}
+:hover.name {background-color: #274271; text-decoration:none; color:white;}
+.link {text-decoration:none; color:black;  }
+A:hover.link {background-color: #274271; text-decoration:none; color:white;}
+
+select.blue	{font-family:tahoma,san-serif; font-size:11px; color:#000066; background-color:#D6E7EF; }
+
+input.redbutton { font-size: 12px; font-family:arial,verdana, sans-serif; background-color: #FA7C7C; color: #000000; font-weight:bold; border-style:groove; cursor: hand; }
+input.greenbutton { font-size: 12px; font-family:arial,verdana, sans-serif; background-color: #99CC99; color: #000000; font-weight:bold; border-style:groove; cursor: hand; }
+input.beigebutton { font-size: 12px; font-family:arial,verdana, sans-serif; background-color: #FFFFCC; color: #000000; font-weight:bold; border-style:groove; cursor: hand; }
+input.bluebutton {font-family:tahoma,sans-serif; font-size:11px; background: #D6E7EF; border-bottom: 1px solid #104A7B; border-right: 1px solid #104A7B; border-left: 1px solid #AFC4D5; border-top:1px solid #AFC4D5; color:#000066;height:19px; text-decoration:none; cursor: hand;}
+//-->
+</style>

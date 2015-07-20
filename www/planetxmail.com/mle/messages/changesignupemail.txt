@@ -1,0 +1,9 @@
+You have requested to change your sign-up/contact
+email address to this one: [email]
+
+Please click the link below to confirm this.
+
+[link]
+
+Username:  [user_name]
+Listname:  [list_name]

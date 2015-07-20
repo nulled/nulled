@@ -1,0 +1,53 @@
+Hello [fname],
+
+This is to inform you that you need to log into your account,
+to keep it ACTIVE.
+
+IMPORTANT NOTE: You will get a notice for EACH account you have
+per safelist. Many people forget about accounts and start using
+another so end up with accounts they did not know they had.
+
+------------------------------------------------------------------
+
+List Name: [list_name]
+
+Username: [user_name]
+Password: ********
+
+If you forgot Your Password use the URL/Link below:
+[change_password_link]
+
+------------------------------------------------------------------
+
+Date of this Notice: [date_today]
+
+Date Last Active: [date_loggedin]
+
+Days Inactive: [num_days_inactive] Days!
+
+------------------------------------------------------------------
+
+To login use the URL/Link below:
+[login_link]
+
+To unsubscribe from the list use the URL below:
+[remove_link]
+
+------------------------------------------------------------------
+
+You can also keep your account active by clicking on Earnable Credit
+Links found in all SOLO ADs and some Member Email ADs.
+
+If You decide to come back to us and login, you will need to set your
+Vacation Switch to OFF.
+
+We Hope to See You Soon!  The Internet has grown in size and the
+Excitement and Opportunities to Make Money Online is at an All Time
+High! Have a Good One!
+
+List Owner Email: [list_owner_email]
+
+Thank You,
+[list_name] Administrator
+http://planetxmail.com/soloads.php
+

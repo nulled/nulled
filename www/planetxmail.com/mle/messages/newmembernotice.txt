@@ -1,0 +1,29 @@
+You have your New Member Notify Email set to ON.
+The following member has signed up and just verified their address to be good.
+____________________________________________________________________
+
+List Name: [list_name]
+
+Username: [user_name]
+First Name: [first_name]
+Last Name: [last_name]
+Status Level: [status]
+
+[referer]
+
+Members current IP Address: [ipaddress]
+____________________________________________________________________
+
+Your current List member count stats below:
+Free: [number_members]
+Professional: [number_professionals]
+Executive: [number_executives]
+
+TOTAL combined count: [number_total]
+
+[date]
+____________________________________________________________________
+If you do not wish to receive a new member notice mail, simply turn
+this option OFF in your Admin Control Panel.
+
+

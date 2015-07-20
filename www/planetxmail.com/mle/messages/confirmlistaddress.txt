@@ -1,0 +1,9 @@
+This message is from [program_name] to confirm your List Email Address.
+
+List name: [list_name]
+
+Please click or cut and paste the link below to confirm and activate your mailing capabilities with us.
+
+[subscribe_link]
+
+Thanks for participating.

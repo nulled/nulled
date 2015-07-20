@@ -1,0 +1,23 @@
+We have received your Direct Exposure AD order.
+
+Date: [date]
+Method of Payment: [mop]
+Amount: $ [price]
+
+Your AD will now be displayed for [numdays] day(s)!
+
+¤§¤==========¤§¤==========¤§
+
+     Over 230+ List Owners
+      Over 245+ Safelists
+ Over 123,000+ active members
+    www.planetxmail.com
+
+¤§¤==========¤§¤==========¤§
+
+The Direct Exposure AD ( HTML ) you submitted is below:
+
+AD HTML:
+
+[message]
+

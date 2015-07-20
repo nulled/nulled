@@ -1,0 +1,21 @@
+Hello [fname],
+
+You Earned it! [credits] credits Upgrades your Free Account to a Professional Account.
+
+Username: [username]
+
+Listname: [listname]
+
+Login to the List using the link below:
+[listlogin]
+
+It is Our Way to say Thank You for Participating.
+
+Now you may enjoy all the benefits of being a Professional Member.
+
+Visit the Webpage below to learn how you can spend your Credits:
+http://planetxmail.com/what_to_do_credits.php
+
+Thank You,
+Planet X Mail Staff
+http://planetxmail.com

@@ -1,0 +1,15 @@
+Hello,
+
+You requested your password.  
+
+You must follow the link below to change your password.
+Once you do you may log on with your same user name as before.  
+Please store your password is a safe and secure location.
+
+Your Username: [username]
+
+Link to change Password:
+[link]
+
+Thank You,
+Planet X Mail

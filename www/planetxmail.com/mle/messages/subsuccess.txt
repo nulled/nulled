@@ -1,0 +1,17 @@
+Hello [user_name],
+
+Thanks for subscribing to [list_name].
+
+You might want to save this email for future reference.
+You can unsubscribe anytime from [list_name] by following this link:
+
+[unsubscribe_link]
+
+Log in with the link below:
+
+[login_link]
+
+If you have questions regarding this mailing list,
+you can contact the list owner at:
+
+[admin_email_address]

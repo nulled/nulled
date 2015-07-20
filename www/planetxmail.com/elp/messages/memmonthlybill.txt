@@ -1,0 +1,23 @@
+Hello [fname],
+
+Your monthly bill for Ezy-List Pro is due.
+
+Today is: [date_today]
+
+Date you signed up: [date_signed_up]
+
+¤§¤==========¤§¤==========¤§
+Please use the link below to pay.
+
+$ [monthly_price] USD
+ELP Partner: [elp_partner_name].
+Their email address is: [elp_partner_email]
+
+[monthly_payment_link]
+¤§¤==========¤§¤==========¤§
+
+You will not be able to activate ELP until payment is received
+and if you wait over 10 days your account will be deleted.
+
+Ezy-List Pro!!!  Saves you time and money to send your ADs EFFORT FREE!
+The ELP System owners email address is: [elp_system_owner_email]

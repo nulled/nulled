@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>sysmon - System Monitor</title>
+<link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAF0/wARUNBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREAEQAREQAREQARABERABEAAAAAABEREQAAAAAAEREREQARABERABERABEAEREAEREAEQAREQAREQARABERABERABEAEREAEREAEQAREQARAAAAAAARABEAAAAAABEAEREAEQAREQAREQARABERABEREREREREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon" />
+</head>
+<body style="padding:0;margin:0" onclick="location.href='sysmon.html'">
+<pre style="padding:5px;margin:0;width:100%;height:1000px;background-color:black;color:white;font-family:Courier">
+MySQL Status        Filesystem            Size  Used Avail Use% Mounted on  Sales
+------------        /dev/sda1              17G   13G  2.7G  83% /           -----
+4 mysqld            none                  494M  212K  494M   1% /dev        2015-02-09 $26.75
+661 mle.queue       none                  501M     0  501M   0% /dev/shm    2015-02-10 $136.05
+2487 mle.bounced    none                  501M   88K  501M   1% /var/run    2015-02-11 $53.50
+2467 mle.mc.bounced none                  501M     0  501M   0% /var/lock   2015-02-12 $26.75
+5143 mle.mc.total   tmpfs                 100M   33M   68M  33% /tmpfs      2015-02-13 $80.25
+0 mle.soloads       /dev/sdc1              68G  3.9G   60G   7% /backup     2015-02-14 $27.90
+0 fap.queue                                                                 2015-02-15 $26.75
+                                                                            
+Postfix Status      12:15:02 up 559 days, 36 min, 1 user,  0.07, 0.14, 0.14 Memory Status
+--------------                                                              -------------
+Yes, Master         php-fpm Status                                          MemTotal:        1024856 kB
+Yes, Qmgr           -------------                                           MemFree:           32888 kB
+2 smtpd             Yes, root php-fpm                                       SwapTotal:        793596 kB
+4 smtp              20 php-fpm                                              SwapFree:         701684 kB
+0 active queue                                                              ErrorCount:            437
+16 deferred queue   Daemons                                                 
+                    -------                                                 Disk Temp
+nginx: Status       /home/nulled/procbounce.php cron /var/log/mail.log      ---------
+-------------       /home/nulled/sendqueue.php cron                         /dev/sda: 31°C 88 F
+Yes, root nginx:                                                            /dev/sdb: S.M.A.R.T. 32 F
+1 nginx:                                                                    /dev/sdc: 26°C 79 F
+                                                                            /dev/sdd: S.M.A.R.T. 32 F
+
+</pre>
+</body>
+</html>

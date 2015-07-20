@@ -1,0 +1,15 @@
+Hello [name],
+
+We received your Solo Ad Order. Receipt: [receipt]
+
+Your credit card did not pass 2checkouts fraud filters.
+
+We are sorry but your order was canceled.
+
+If you feel this was in error, which maybe could happen.
+
+OpenTicket: http://planetxmail.com/openticket.php
+
+Thank You,
+Matt - Customer Service
+http://planetxmail.com/openticket.php

@@ -1,0 +1,12 @@
+<b><font color=#005F8C size=+1>Some Professional membership benefits</font></b>
+<br><br>
+<ul>
+  <li type=square>
+    You can track up to [num_urltrackers_pro] ads at the same time with our powerful in-built AD tracking system.
+  </li>
+  <li type=square>
+    Send mail [pro_sendmail_times_week] per week, once per day.
+  </li>
+    <br><br>
+    <b>Our Professional membership is a great value at only $[cost_of_pro]</b>
+</ul>

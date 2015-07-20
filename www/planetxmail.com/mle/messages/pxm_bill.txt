@@ -1,0 +1,26 @@
+Payment is due for your list hosted at www.planetxmail.com
+
+You must pay using the link below for the system to record your payment!
+[paylink]
+
+Note: If after 7 days, payment is not received, your list
+will be disabled and after 30 days will be DELETED.
+
+List Name: [listname]
+
+List Owner Name: [listowner]
+List Type: [listtype]
+List Size: [nummembers]
+
+Payment amount: $ [price]
+
+You must pay using the link below for the system to record your payment!
+[paylink]
+
+Current Date: [senddate]
+Date you signed up: [date]
+
+IMPORTANT!!!  When you go thru the pay process BE SURE to continue until you
+get to MY thank you payment page.  Only then will you be fully signed off as
+PAID.  Click the SALE COMPLETE url on Click Bank and PayPal... dont
+just stop when you get to THEIR thank you pages.

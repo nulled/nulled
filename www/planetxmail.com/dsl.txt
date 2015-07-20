@@ -1,0 +1,17 @@
+codekey = Mid(codekey, 3, 1) + Mid(codekey, 11, 1) + Mid(codekey, 5, 1) + Mid(codekey, 16, 1) + Mid(codekey, 13, 1) + Mid(codekey, 10, 1)
+
+
+'Dim success As Long
+On Error Resume Next
+
+'App.HelpFile = App.Path & "\documentation.hlp"
+'success = WinHelp(Me.hWnd, App.HelpFile, 9, ByVal 0&)
+Dim theURL As String
+
+theURL = "http://www.planetxmail.com/elp/help.php"
+URLText.Text = theURL
+
+Call GotoURLButton_Click
+
+1Z 34A V85 03 4196 892 2   In Transit Sched. Delivery:    Dec 13, 2002
+ 

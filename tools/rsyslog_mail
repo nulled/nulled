@@ -1,0 +1,5 @@
+#!/bin/bash
+
+/home/nulled/tools/
+rm -f /var/log/mail.*
+service rsyslog restart

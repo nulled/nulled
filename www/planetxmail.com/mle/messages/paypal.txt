@@ -1,0 +1,11 @@
+<form name="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="POST">
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="[paypal_account]">
+<input type="hidden" name="item_name" value="[item_name]">
+<input type="hidden" name="amount" value="[price]">
+<input type="hidden" name="custom" value="[paypal_custom]">
+<input type="hidden" name="no_shipping" value="1">
+<input type="hidden" name="return" value="[payment_thankyou_link]">
+<input type="hidden" name="cancel_return" value="[payment_cancel_link]">
+<input type="image" src="http://205.252.89.252/mle/images/paypallogo.jpg" name="I1">
+</form>
